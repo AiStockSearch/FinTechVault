@@ -10,6 +10,21 @@ tasks:
     desc: "Build the app for production"
     cmds:
       - wails build
+  
+  frontend-test:
+    desc: "Run the frontend tests"
+    cmds:
+      - cd frontend && npm run test
+  
+  frontend-test-e2e:
+    desc: "Run the frontend tests"
+    cmds:
+      - cd frontend && npm run test-e2e
+
+  frontend-test-e2e:
+    desc: "Run the frontend tests"
+    cmds:
+      - go test
 
   docker-compose:
     desc: "Run the app in development mode"
