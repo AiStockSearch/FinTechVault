@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wails-app
+    volumes:
+      - .:/app
+    ports:
+      - "34115:34115" # Порт для dev-сервера (если вы используете режим разработки)
+    environment:
+      - WAILS_ENV=development # Установите среду разработки или production
+    command: ["wails", "dev"] # Используйте "wails dev" для разработки или "wails build" для production

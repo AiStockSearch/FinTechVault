@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  dev:
+    desc: "Run the app in development mode"
+    cmds:
+      - wails dev
+
+  build:
+    desc: "Build the app for production"
+    cmds:
+      - wails build
+
+  docker-compose:
+    desc: "Run the app in development mode"
+    cmds: 
+      - docker-compose up -d

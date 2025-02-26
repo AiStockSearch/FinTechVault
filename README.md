@@ -1,19 +1,34 @@
-# README
+Использование task (аналог npm scripts для Go)
+task — это простой инструмент для создания скриптов, аналогичных npm scripts, но для Go-проектов.
 
-## About
+Установка task:
 
-This is the official Wails React-TS template.
+brew install go-task/tap/go-task
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
 
-## Live Development
+```
+# Stop the docker services
+echo "Stopping Docker..."
+sudo pkill '[dD]ocker'
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+# Stop the vmnetd service
+echo "Stopping com.docker.vmnetd service..."
+sudo launchctl bootout system /Library/LaunchDaemons/com.docker.vmnetd.plist
 
-## Building
+# Stop the socket service
+echo "Stopping com.docker.socket service..."
+sudo launchctl bootout system /Library/LaunchDaemons/com.docker.socket.plist
 
-To build a redistributable, production mode package, use `wails build`.
+# Remove vmnetd binary
+echo "Removing com.docker.vmnetd binary..."
+sudo rm -f /Library/PrivilegedHelperTools/com.docker.vmnetd
+
+# Remove socket binary
+echo "Removing com.docker.socket binary..."
+sudo rm -f /Library/PrivilegedHelperTools/com.docker.socket
+
+# Install new binaries
+echo "Install new binaries..."
+sudo cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools/
+sudo cp /Applications/Docker.app/Contents/MacOS/com.docker.socket /Library/PrivilegedHelperTools/
+```
