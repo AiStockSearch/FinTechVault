@@ -7,6 +7,7 @@ toolchain go1.24.0
 require (
 	github.com/stretchr/testify v1.10.0
 	github.com/wailsapp/wails/v2 v2.10.1
+	gonum.org/v1/gonum v0.15.1
 )
 
 require (
