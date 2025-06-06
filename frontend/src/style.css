@@ -1,26 +1,72 @@
-html {
-    background-color: rgba(27, 38, 54, 1);
+
+:root {
+    /* Base Color */
+    --color-primary: #051727;
+  
+    /* Monochromatic */
+    --color-primary-light: #0a2b4a;
+    --color-primary-dark: #03111f;
+    --color-primary-xdark: #010a12;
+  
+    /* Analogous/Extended Colors */
+    --color-analog-blue: #052740;
+    --color-analog-teal: #042715;
+  
+    /* Accents */
+    --color-accent-cyan: #1f8ece;
+    --color-accent-yellow: #ffd166;
+    --color-accent-coral: #ef476f;
+  
+    /* Neutrals */
+    --color-neutral-light: #f4f7fa;
+    --color-neutral-mid: #a0aec0;
+    --color-neutral-dark: #4a5568;
+  }
+
+@layer utilities {
+  .color-primary {
+    color: var(--text-primary);
+  }
+  .text-primary-light {
+    color: var(--text-primary-light);
+  }
+  .text-primary-dark {
+    color: var(--text-primary-dark);
+  }
+  .text-primary-xdark {
+    color: var(--text-primary-xdark);
+  }
+
+  .text-analog-blue {
+    color: var(--text-analog-blue);
+  }
+  .text-analog-teal {
+    color: var(--text-analog-teal);
+  }
+
+  .text-neutral-light {
+    color: var(--text-neutral-light);
+  }
+  .text-neutral-mid {
+    color: var(--text-neutral-mid);
+  }
+  .text-neutral-dark {
+    color: var(--text-neutral-dark);
+  }
+
+  .text-accent-cyan {
+    color: var(--text-accent-cyan);
+  }
+  .text-accent-yellow {
+    color: var(--text-accent-yellow);
+  }
+  .text-accent-coral {
+    color: var(--text-accent-coral);
+  }
+}
+
+  html {
+    background-color: var(--color-primary);
     text-align: center;
     color: white;
-}
-
-body {
-    margin: 0;
-    color: white;
-    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-}
-
-@font-face {
-    font-family: "Nunito";
-    font-style: normal;
-    font-weight: 400;
-    src: local(""),
-    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
-}
-
-#app {
-    height: 100vh;
-    text-align: center;
 }

@@ -2,3 +2,9 @@
     height: 100vh;
     text-align: center;
 }
+
+#main{
+    background: red;
+    height: max-content;
+    width: max-content;
+}
