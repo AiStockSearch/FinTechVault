@@ -1,0 +1,74 @@
+/* Определение шрифтов PP Mori */
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-Extralight.otf') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-ExtralightItalic.otf') format('opentype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-RegularItalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PP Mori';
+    src: url('./PPMori-SemiBoldItalic.otf') format('opentype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Определение шрифта Shift */
+@font-face {
+    font-family: 'Shift';
+    src: url('./Pretender.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Определение новых шрифтов */
+@font-face {
+    font-family: 'Font9';
+    src: url('./9ab548725e4af601-s.p.ttf') format('truetype');
+    font-weight:300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FontWoff2';
+    src: url('./ff840cfebfb63b0c-s.p.woff2') format('woff2');
+    font-weight:300;
+    font-style: normal;
+    font-display: swap;
+} 

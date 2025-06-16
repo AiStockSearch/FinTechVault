@@ -1,0 +1,69 @@
+.second-login {
+  min-height: 78vh;
+  background: #6c63ff;
+  display: flex;
+  padding: 8em;
+  align-items: flex-end;
+  justify-content: flex-start;
+  position: relative;
+
+  .manifesto_button {
+    padding: 6px;
+    position: absolute;
+    right: 8em;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 50px;
+    width: 250px;
+    background-color: black;
+    margin-bottom: 14px;
+
+    .manifesto-link {
+      flex-direction: row;
+      display: flex;
+      justify-content: space-betwe\
+      en;
+      align-items: center;
+
+      span {
+        color: white;
+        font-family: "Font9", sans-serif;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .second-login-inner {
+    h1 {
+      font-size: 32px;
+      text-align: start;
+      font-weight: 400;
+      line-height: 32px;
+      font-family: "Font9", sans-serif;
+      white-space: preline;
+    }
+
+
+    .content {
+      margin-top: 30px;
+      p {
+        font-size: 16px;
+        line-height: 16px;
+        font-family: "PP Mori", sans-serif;
+        font-weight: 300;
+        text-align: left;
+
+        strong {
+          font-family: "PP Mori", sans-serif;
+          font-weight: 800;
+          padding-right: 2px;
+        }
+        span {
+          font-family: "PP Mori", sans-serif;
+          font-weight: 400;
+          padding-right: 2px;
+        }
+      }
+    }
+  }
+}

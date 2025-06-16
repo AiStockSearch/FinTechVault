@@ -1,0 +1,133 @@
+.three-login {
+  min-height: 80vh;
+  background: #6c63ff;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 7vw 7vw 4vw 7vw;
+  position: relative;
+  gap: 4vw;
+}
+
+.three-login-inner {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.three-login-inner h1 {
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  text-align: left;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.three-login-inner .block {
+  display: block;
+}
+
+.content {
+  text-align: left;
+  color: #e6e6e6;
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.manifesto_button {
+  margin-top: 1.5rem;
+}
+
+.manifesto-link {
+  display: inline-flex;
+  align-items: center;
+  background: #18181b;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+  gap: 0.7rem;
+}
+
+.manifesto-link:hover {
+  background: #333;
+  color: #fff;
+}
+
+.manifesto-link svg {
+  margin-left: 0.5rem;
+  stroke-width: 2.2;
+}
+
+.three-login-assets, .three-login-chains {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 2vw;
+  margin-bottom: 1.2rem;
+}
+
+.asset-icon, .chain-icon {
+  background: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+}
+
+.assets-info, .chains-info, .tvl-info {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.tvl-info {
+  color: #A0A7FF;
+  font-size: 1.1rem;
+  margin-left: 2rem;
+}
+
+@media (max-width: 900px) {
+  .three-login {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2vw;
+    padding: 5vw 3vw 3vw 3vw;
+  }
+  .three-login-assets, .three-login-chains {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .three-login {
+    min-height: 60vh;
+    padding: 2vw;
+    gap: 1vw;
+  }
+  .three-login-inner h1 {
+    font-size: 1.2rem;
+  }
+  .manifesto-link {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.1rem 0.6rem 1rem;
+  }
+  .assets-info, .chains-info, .tvl-info {
+    font-size: 0.95rem;
+    margin-left: 0.5rem;
+  }
+} 
