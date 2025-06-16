@@ -1,0 +1,569 @@
+epic:
+  id: 86247bd9-c6f6-4e9a-ba59-b26271af54a0
+  title: Tokenomics and Static Pages
+  priority: Medium
+  duration_weeks: 10
+  dependencies:
+    - ccfe0a81-ba8a-47cb-a200-05dc88dba9bb # Article Publication
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Tokenomics Page UI
+      priority: High
+      hours: 80
+      description: Develop a UI for the /tokenomics page showcasing WTH tokenomics (airdrop, Hold-to-Earn, DAO).
+      functionality:
+        - Sections: Airdrop (100 WTH until 2025-07-12), Hold-to-Earn (0.01%/day), DAO voting (200 WTH min)
+        - Localization: RU, EN, CN (i18next)
+        - Animation: Section transitions (Framer Motion)
+        - Notification: Toast on page load
+      api:
+        endpoint: /api/static/tokenomics
+        request:
+          method: GET
+          path: /api/static/tokenomics?lang=ru
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            content:
+              title: WTH Tokenomics
+              airdrop: 100 WTH until 2025-07-12
+              holdToEarn: 0.01%/day
+              dao: 200 WTH minimum
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display airdrop and Hold-to-Earn in RU
+          - Toast notification on load
+        full:
+          - Support 3 languages, 1,000 views/min
+          - Animations, WCAG 2.1
+        error:
+          - Empty content: Show "Content Not Available"
+          - API error: Show "Page Fetch Failed"
+      prompt: How to create a tokenomics page UI in React Native with i18next and Framer Motion? Examples of localization.
+    - id: FE2
+      title: FAQ Page UI
+      priority: Medium
+      hours: 60
+      description: UI for the /faq page with accordion-style questions and live chat support.
+      functionality:
+        - Accordion: 20 questions/answers
+        - Live chat: Tawk.to integration
+        - Localization: RU, EN, CN
+        - Notification: Toast on chat initiation
+      api:
+        endpoint: /api/static/faq
+        request:
+          method: GET
+          path: /api/static/faq?lang=ru
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            faqs:
+              - question: What is WTH?
+                answer: WTH is the platform token...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 questions in RU
+          - Toast notification on chat start
+        full:
+          - 20 questions, 1,000 chats/min, 3 languages
+          - WCAG 2.1
+        error:
+          - Tawk.to offline: Show "Support Unavailable"
+          - API error: Show "FAQ Fetch Failed"
+      prompt: How to create an FAQ page UI in Wails with Tawk.to? Examples of accordion components.
+    - id: FE3
+      title: Blog Page UI
+      priority: Medium
+      hours: 60
+      description: UI for the /blog page displaying news and articles with IPFS content.
+      functionality:
+        - List: Post title, date, preview
+        - Detail: Full post with IPFS media
+        - Pagination: 10 posts/page
+        - Notification: Toast on post load
+      api:
+        endpoint: /api/static/blog
+        request:
+          method: GET
+          path: /api/static/blog?page=1&lang=ru
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            posts:
+              - id: 123
+                title: WTH Updates
+                preview: Article preview...
+                cid: Qm123...
+            total: 50
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 5 posts from IPFS
+          - Toast notification on load
+        full:
+          - 1,000 posts/min, 3 languages
+          - WCAG 2.1
+        error:
+          - CID inaccessible: Show "Post Not Found"
+          - API error: Show "Blog Fetch Failed"
+      prompt: How to create a blog page UI in React Native with IPFS? Examples of pagination.
+    - id: FE4
+      title: Airdrop Claim UI
+      priority: High
+      hours: 60
+      description: UI for claiming WTH token airdrops (100 WTH until 2025-07-12).
+      functionality:
+        - Form: Wallet address, claim button
+        - Display: Airdrop status, claimed amount
+        - Notification: Toast on claim success
+        - Animation: Claim confirmation
+      api:
+        endpoint: /api/tokenomics/airdrop
+        request:
+          method: POST
+          path: /api/tokenomics/airdrop
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            address: 0x123...
+            amount: 100
+        response:
+          status: 200
+          body:
+            status: claimed
+            txHash: 0x789...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Claim 100 WTH airdrop
+          - Toast notification on success
+        full:
+          - Support 1,000 claims/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid address: Show "Invalid Address"
+          - API error: Show "Claim Failed"
+      prompt: How to create an airdrop claim UI in Wails? Examples of Web3.js integration.
+    - id: FE5
+      title: Hold-to-Earn Dashboard UI
+      priority: Medium
+      hours: 60
+      description: UI for tracking Hold-to-Earn rewards (0.01%/day) for WTH tokens.
+      functionality:
+        - Dashboard: Current balance, daily rewards
+        - Graphs: Reward history (Recharts)
+        - Notification: Toast on reward update
+        - Animation: Balance refresh
+      api:
+        endpoint: /api/tokenomics/hold
+        request:
+          method: GET
+          path: /api/tokenomics/hold?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            balance: 1000
+            dailyReward: 0.1
+            history:
+              - date: 2025-06-01
+                reward: 0.1
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 1,000 WTH balance and reward
+          - Toast notification on update
+        full:
+          - 1,000 updates/min, graph display
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No balance: Show "No Balance"
+          - API error: Show "Reward Fetch Failed"
+      prompt: How to create a Hold-to-Earn dashboard UI in React Native? Examples of Recharts.
+    - id: FE6
+      title: Tokenomics Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to tokenomics (e.g., airdrop claimed, reward earned).
+      functionality:
+        - Toast notifications: Airdrop success, reward update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: tokenomics
+            message: 100 WTH airdrop claimed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for airdrop claim
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for tokenomics in Wails? Examples of toast animations.
+    - id: BE1
+      title: Airdrop Distribution Service
+      priority: High
+      hours: 80
+      description: Backend for distributing WTH token airdrops (100 WTH until 2025-07-12) on Polygon.
+      functionality:
+        - Distribution: Transfer 100 WTH to eligible addresses
+        - Validation: Wallet eligibility, claim limit
+        - Smart contract: Solidity on Polygon
+        - Notification: Trigger WebSocket on claim
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/tokenomics/airdrop
+        request:
+          method: POST
+          path: /api/tokenomics/airdrop
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            address: 0x123...
+            amount: 100
+        response:
+          status: 200
+          body:
+            status: claimed
+            txHash: 0x789...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Distribute 100 WTH to one address
+          - Send WebSocket notification
+        full:
+          - 1,000 claims/min, smart contract audit
+          - ELK logs
+        error:
+          - Invalid address: 400 error, ELK log
+          - Claim limit reached: 403 error, ELK log
+      prompt: How to distribute WTH airdrops on Polygon with Solidity? Examples of smart contracts.
+    - id: BE2
+      title: Hold-to-Earn Reward Service
+      priority: Medium
+      hours: 60
+      description: Backend for calculating and distributing Hold-to-Earn rewards (0.01%/day) on Polygon.
+      functionality:
+        - Calculation: Daily reward based on WTH balance
+        - Distribution: Cron job for transfers
+        - Smart contract: Solidity on Polygon
+        - Notification: Trigger WebSocket on reward
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/tokenomics/hold
+        request:
+          method: GET
+          path: /api/tokenomics/hold?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            balance: 1000
+            dailyReward: 0.1
+            history:
+              - date: 2025-06-01
+                reward: 0.1
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Calculate 0.1 WTH reward for 1,000 balance
+          - Send WebSocket notification
+        full:
+          - 1,000 distributions/min, cron accuracy
+          - ELK logs
+        error:
+          - Invalid balance: 400 error, ELK log
+          - Distribution failure: 500 error, ELK log
+      prompt: How to implement Hold-to-Earn rewards on Polygon with cron jobs? Examples of Solidity.
+    - id: BE3
+      title: DAO Voting for Tokenomics Service
+      priority: Medium
+      hours: 60
+      description: Backend for DAO voting on tokenomics changes (e.g., airdrop amount) on Cosmos.
+      functionality:
+        - Voting: Record votes (200 WTH min)
+        - Multisig: 2/3 approval threshold
+        - Notification: Trigger WebSocket on vote
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/tokenomics/vote
+        request:
+          method: POST
+          path: /api/tokenomics/vote
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            proposalId: 123
+            vote: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            voteId: 789
+            status: submitted
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Record yes vote with 200 WTH tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 votes/min, multisig support
+          - ELK logs
+        error:
+          - Insufficient tokens: 403 error, ELK log
+          - Invalid proposal: 404 error, ELK log
+      prompt: How to implement DAO voting for tokenomics on Cosmos? Examples of vote APIs.
+    - id: BE4
+      title: Static Pages Storage Service
+      priority: Medium
+      hours: 60
+      description: Backend for storing static page content on IPFS and Arweave.
+      functionality:
+        - Storage: Pages on IPFS, metadata on Arweave
+        - Pinning: Pinata/Infura
+        - Encryption: AES-256 for metadata
+        - Notification: Trigger WebSocket on update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/storage/static
+        request:
+          method: POST
+          path: /api/storage/static
+          headers:
+            Authorization: Bearer {token}
+          body:
+            page: tokenomics
+            content: <p>Content...</p>
+        response:
+          status: 200
+          body:
+            cid: Qm123...
+            url: ipfs://...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store /tokenomics on IPFS
+          - Send WebSocket notification
+        full:
+          - 1,000 storages/min, Arweave metadata
+          - ELK logs
+        error:
+          - CID inaccessible: 404 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to store static pages on IPFS and Arweave? Examples of Pinata APIs.
+    - id: BE5
+      title: Tokenomics Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting tokenomics analytics (e.g., airdrop claims, rewards) with Matomo.
+      functionality:
+        - Metrics: Claims, rewards distributed
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/tokenomics/analytics
+        request:
+          method: GET
+          path: /api/tokenomics/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                claims: 100
+                rewards: 10
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 airdrop claims in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect tokenomics analytics with Matomo? Examples of analytics APIs.
+    - id: BE6
+      title: Static Pages Cache Service
+      priority: Low
+      hours: 60
+      description: Backend for caching static page content with Redis.
+      functionality:
+        - Caching: Redis (TTL 5 min)
+        - Invalidation: On content update
+        - Notification: Trigger WebSocket on cache refresh
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/static/cache
+        request:
+          method: GET
+          path: /api/static/cache?page=tokenomics
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            content:
+              title: WTH Tokenomics
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cache /tokenomics content
+          - Access in < 20ms
+        full:
+          - 1,000 requests/min, cache invalidation
+          - ELK logs
+        error:
+          - Cache miss: 404 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: How to cache static pages with Redis? Examples of cache invalidation.
+    - id: BE7
+      title: Tokenomics Testing
+      priority: Medium
+      hours: 60
+      description: Testing for airdrop, Hold-to-Earn, DAO voting, and static page services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test tokenomics services with Locust? Examples of test cases.
+    - id: BE8
+      title: Tokenomics Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast tokenomics-related notifications via WebSocket.
+      functionality:
+        - Triggers: Airdrop claimed, reward distributed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: tokenomics
+            message: 100 WTH airdrop claimed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast airdrop claim notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for tokenomics? Examples of Redis queuing.
+services:
+  - name: Tokenomics Service
+    description: Manages WTH tokenomics (airdrop, Hold-to-Earn, DAO voting)
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - PostgreSQL
+      - IPFS
+      - Arweave
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for tokenomics actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Tokenomics Service
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, IPFS, Arweave)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

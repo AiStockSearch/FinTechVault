@@ -1,0 +1,565 @@
+epic:
+  id: 741e933c-6604-4b99-9ce9-e671e43b5098
+  title: Analytics and Statistics
+  priority: High
+  duration_weeks: 14
+  dependencies:
+    - 46bf3715-2434-4cef-9bfe-f6214afe56c0 # Portfolio Monitoring
+    - 0b26ca98-537f-4be6-ba3c-0f2a6fa9959c # Strategy Modeling
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Interactive Brokers API
+      url: https://www.interactivebrokers.com/api/doc.html
+    - name: OANDA API
+      url: https://developer.oanda.com/rest-live-v20/introduction/
+  tasks:
+    - id: FE1
+      title: Risk Metrics UI
+      priority: High
+      hours: 80
+      description: Develop a UI for displaying portfolio risk metrics (e.g., VaR, CVaR) with interactive visualizations.
+      functionality:
+        - Dashboard: VaR, CVaR, volatility graphs (Recharts)
+        - Filters: Asset, time period, confidence level
+        - Export: CSV
+        - Notification: Toast on metrics update
+      api:
+        endpoint: /api/analytics/risk
+        request:
+          method: GET
+          path: /api/analytics/risk?userId=u123&asset=BTC&period=1y&confidence=0.95
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            metrics:
+              var: 0.05
+              cvar: 0.07
+              volatility: 0.3
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display VaR graph for BTC
+          - Toast notification on update
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - API error: Show "Metrics Fetch Failed"
+      prompt: How to create a risk metrics UI in React Native with Recharts? Examples of VaR visualization.
+    - id: FE2
+      title: Analytics Dashboard UI
+      priority: High
+      hours: 80
+      description: UI for a comprehensive analytics dashboard with portfolio and strategy performance metrics.
+      functionality:
+        - Graphs: Returns, Sharpe Ratio, drawdowns (Recharts)
+        - Filters: Date, asset, strategy
+        - Interactive controls: Zoom, pan
+        - Notification: Toast on dashboard refresh
+      api:
+        endpoint: /api/analytics/dashboard
+        request:
+          method: GET
+          path: /api/analytics/dashboard?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                returns: 0.15
+                sharpeRatio: 1.5
+                drawdown: 0.1
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display returns graph for BTC
+          - Toast notification on refresh
+        full:
+          - 5 metrics, zoom/pan, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - API error: Show "Dashboard Fetch Failed"
+      prompt: How to create an analytics dashboard UI in Wails? Examples of interactive Recharts graphs.
+    - id: FE3
+      title: API Keys UI for Analytics
+      priority: Medium
+      hours: 60
+      description: UI for inputting and managing API keys for Interactive Brokers/OANDA data in analytics.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /accounts/summary)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on validation success
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: oanda
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USD: 100000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate OANDA key, display balance
+          - Toast notification on success
+        full:
+          - Support 2 exchanges, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: How to create an API key input UI in React Native for analytics? Examples of AES-256 encryption.
+    - id: FE4
+      title: Prediction Visualization UI
+      priority: Medium
+      hours: 60
+      description: UI for visualizing ML-based price predictions (e.g., LSTM forecasts) for assets.
+      functionality:
+        - Graphs: Predicted vs. actual prices (Recharts)
+        - Filters: Asset, prediction horizon
+        - Export: CSV
+        - Notification: Toast on prediction update
+      api:
+        endpoint: /api/analytics/predict
+        request:
+          method: GET
+          path: /api/analytics/predict?userId=u123&asset=SOL&horizon=30d
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            predictions:
+              - date: 2025-07-01
+                predictedPrice: 220
+                actualPrice: 200
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display SOL price prediction graph
+          - Toast notification on update
+        full:
+          - 5 assets, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Predictions"
+          - API error: Show "Prediction Fetch Failed"
+      prompt: How to visualize ML price predictions in Wails? Examples of Recharts for forecasts.
+    - id: FE5
+      title: Analytics Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to analytics (e.g., metrics updated, prediction completed).
+      functionality:
+        - Toast notifications: Metrics refresh, prediction update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: analytics
+            message: Risk metrics updated
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for metrics update
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for analytics in Wails? Examples of toast animations.
+    - id: BE1
+      title: Statistical Analysis Service
+      priority: High
+      hours: 100
+      description: Backend for running statistical models (e.g., ARIMA) on portfolio and market data using Julia.
+      functionality:
+        - Models: ARIMA for time-series analysis
+        - Data: Interactive Brokers, OANDA, Chainlink
+        - Notification: Trigger WebSocket on analysis completion
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/stats
+        request:
+          method: POST
+          path: /api/analytics/stats
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            asset: BTC
+            model: arima
+            period: 1y
+        response:
+          status: 200
+          body:
+            analysisId: 123
+            results:
+              coefficients:
+                ar1: 0.8
+                ma1: 0.2
+              forecast:
+                - date: 2025-07-01
+                  value: 65000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Run ARIMA on BTC data
+          - Send WebSocket notification
+        full:
+          - 1,000 analyses/min, 3 models
+          - ELK logs
+        error:
+          - Invalid data: 400 error, ELK log
+          - Model failure: 500 error, ELK log
+      prompt: How to run ARIMA models with Julia for market data? Examples of API integration.
+    - id: BE2
+      title: ML Prediction Service
+      priority: High
+      hours: 80
+      description: Backend for generating ML-based price predictions (e.g., LSTM) using Julia.
+      functionality:
+        - Models: LSTM for price forecasting
+        - Data: Interactive Brokers, OANDA
+        - Notification: Trigger WebSocket on prediction
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/predict
+        request:
+          method: POST
+          path: /api/analytics/predict
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            asset: SOL
+            model: lstm
+            horizon: 30d
+        response:
+          status: 200
+          body:
+            predictionId: 456
+            predictions:
+              - date: 2025-07-01
+                predictedPrice: 220
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Generate SOL price prediction
+          - Send WebSocket notification
+        full:
+          - 1,000 predictions/min, 2 models
+          - ELK logs
+        error:
+          - Invalid horizon: 400 error, ELK log
+          - Model failure: 500 error, ELK log
+      prompt: How to implement LSTM predictions with Julia? Examples of ML APIs.
+    - id: BE3
+      title: Clustering Service
+      priority: Medium
+      hours: 80
+      description: Backend for clustering assets or portfolios using K-means with Julia.
+      functionality:
+        - Clustering: K-means for asset segmentation
+        - Data: Portfolio metrics, market data
+        - Notification: Trigger WebSocket on clustering
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/cluster
+        request:
+          method: POST
+          path: /api/analytics/cluster
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            assets:
+              - BTC
+              - SOL
+            clusters: 5
+        response:
+          status: 200
+          body:
+            clusterId: 789
+            clusters:
+              - cluster: 1
+                assets:
+                  - BTC
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cluster BTC and SOL into 5 groups
+          - Send WebSocket notification
+        full:
+          - 1,000 clusterings/min, 10 assets
+          - ELK logs
+        error:
+          - Invalid clusters: 400 error, ELK log
+          - Clustering failure: 500 error, ELK log
+      prompt: How to implement K-means clustering with Julia? Examples of clustering APIs.
+    - id: BE4
+      title: Data Pipeline Service
+      priority: High
+      hours: 80
+      description: Backend for processing and storing analytics data in InfluxDB.
+      functionality:
+        - Pipeline: ETL for Interactive Brokers, OANDA, Chainlink
+        - Storage: InfluxDB for time-series
+        - Notification: Trigger WebSocket on pipeline run
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/pipeline
+        request:
+          method: POST
+          path: /api/analytics/pipeline
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            source: oanda
+            asset: EURUSD
+        response:
+          status: 200
+          body:
+            pipelineId: 123
+            status: processed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Process EURUSD data from OANDA
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 3 sources
+          - ELK logs
+        error:
+          - Invalid source: 400 error, ELK log
+          - Pipeline failure: 500 error, ELK log
+      prompt: How to build an ETL pipeline for analytics with InfluxDB? Examples of data pipelines.
+    - id: BE5
+      title: Behavioral Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting user behavior analytics with Matomo.
+      functionality:
+        - Metrics: Page views, interactions
+        - Integration: Matomo for analytics
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/behavior
+        request:
+          method: GET
+          path: /api/analytics/behavior?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                pageViews: 100
+                interactions: 50
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 page views
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 3 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect behavioral analytics with Matomo? Examples of analytics APIs.
+    - id: BE6
+      title: ML Optimization Service
+      priority: Medium
+      hours: 60
+      description: Backend for optimizing ML models (e.g., LSTM) using GPU acceleration.
+      functionality:
+        - Optimization: Hyperparameter tuning
+        - Hardware: GPU (AWS EC2 G4 instances)
+        - Notification: Trigger WebSocket on optimization
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/analytics/ml
+        request:
+          method: POST
+          path: /api/analytics/ml
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            model: lstm
+            parameters:
+              layers: 2
+              units: 64
+        response:
+          status: 200
+          body:
+            optimizationId: 123
+            parameters:
+              layers: 2
+              units: 128
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Optimize LSTM model
+          - Send WebSocket notification
+        full:
+          - 1,000 optimizations/min, GPU acceleration
+          - ELK logs
+        error:
+          - Invalid model: 400 error, ELK log
+          - Optimization failure: 500 error, ELK log
+      prompt: How to optimize ML models with GPU in Julia? Examples of hyperparameter tuning.
+    - id: BE7
+      title: Analytics Testing
+      priority: Medium
+      hours: 60
+      description: Testing for statistical, ML, clustering, pipeline, and behavioral analytics services.
+      functionality:
+        - Unit tests: Test.jl for Julia APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test analytics services with Test.jl and Locust? Examples of test cases.
+    - id: BE8
+      title: Analytics Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast analytics-related notifications via WebSocket.
+      functionality:
+        - Triggers: Metrics updated, prediction completed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: analytics
+            message: Risk metrics updated
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast metrics update notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for analytics? Examples of Redis queuing.
+services:
+  - name: Statistical Analysis Service
+    description: Runs statistical models for portfolio and market analytics
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - InfluxDB
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for analytics updates
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Statistical Analysis
+      type: AWS EC2
+      specs:
+        instance: m5.2xlarge
+        cores: 8
+        ram: 32GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: ML Optimization
+      type: AWS EC2
+      specs:
+        instance: g4dn.xlarge
+        cores: 4
+        ram: 16GB
+        gpu: 1
+  storage: 12TB (S3, InfluxDB)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

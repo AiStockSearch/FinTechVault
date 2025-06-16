@@ -1,0 +1,597 @@
+epic:
+  id: 0b26ca98-537f-4be6-ba3c-0f2a6fa9959c
+  title: Strategy Modeling
+  priority: High
+  duration_weeks: 12
+  dependencies:
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - 46bf3715-2434-4cef-9bfe-f6214afe56c0 # Portfolio Monitoring
+    - 741e933c-6604-4b99-9ce9-e671e43b5098 # Analytics and Statistics
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+  tasks:
+    - id: FE1
+      title: Strategy Modeling UI
+      priority: High
+      hours: 80
+      description: Develop a UI for configuring trading strategies (e.g., RSI, Monte Carlo) with simulation parameters.
+      functionality:
+        - Form: Strategy type, assets (BTC, SOL), parameters (e.g., RSI period)
+        - Sliders: Risk, leverage, time horizon
+        - Preview: Simulated performance graph
+        - Notification: Toast on strategy save
+      api:
+        endpoint: /api/strategy/ui
+        request:
+          method: POST
+          path: /api/strategy/ui
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyType: rsi
+            assets:
+              - symbol: BTC
+            parameters:
+              period: 14
+              overbought: 70
+              oversold: 30
+        response:
+          status: 200
+          body:
+            strategyId: 123
+            status: saved
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Save RSI strategy for BTC
+          - Toast notification on success
+        full:
+          - Support 5 strategy types, 1,000 saves/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid parameters: Show "Invalid Parameters"
+          - API error: Show "Strategy Save Failed"
+      prompt: How to create a strategy modeling UI in React Native? Examples of parameter sliders.
+    - id: FE2
+      title: Strategy Simulation UI
+      priority: High
+      hours: 80
+      description: UI for running and visualizing strategy simulations with interactive controls.
+      functionality:
+        - Run button: Trigger simulation
+        - Graphs: Returns, drawdowns (Recharts)
+        - Controls: Adjust simulation parameters (iterations, timeframe)
+        - Notification: Toast on simulation completion
+      api:
+        endpoint: /api/strategy/simulate
+        request:
+          method: POST
+          path: /api/strategy/simulate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            iterations: 1000
+            timeframe: 1y
+        response:
+          status: 200
+          body:
+            simulationId: 456
+            results:
+              returns: 0.15
+              maxDrawdown: 0.1
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Run 1000-iteration simulation for BTC
+          - Display returns graph
+          - Toast notification on completion
+        full:
+          - Support 1,000 simulations/min, 5 metrics
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid strategy: Show "Invalid Strategy"
+          - API error: Show "Simulation Failed"
+      prompt: How to create a strategy simulation UI in Wails? Examples of Recharts for drawdowns.
+    - id: FE3
+      title: Strategy Backtesting UI
+      priority: Medium
+      hours: 60
+      description: UI for backtesting strategies against historical data with performance metrics.
+      functionality:
+        - Form: Select historical period, data source (Bybit, Chainlink)
+        - Graphs: Backtest returns, equity curve (Recharts)
+        - Export: CSV
+        - Notification: Toast on backtest completion
+      api:
+        endpoint: /api/strategy/backtest
+        request:
+          method: POST
+          path: /api/strategy/backtest
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            period: 2024-06-01:2025-06-01
+            dataSource: bybit
+        response:
+          status: 200
+          body:
+            backtestId: 789
+            results:
+              returns: 0.12
+              sharpeRatio: 1.3
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Run backtest for BTC RSI strategy
+          - Display equity curve
+          - Toast notification on completion
+        full:
+          - 1,000 backtests/min, CSV export
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid period: Show "Invalid Period"
+          - API error: Show "Backtest Failed"
+      prompt: How to create a backtesting UI in React Native? Examples of equity curve graphs.
+    - id: FE4
+      title: API Keys UI for Strategy Execution
+      priority: Medium
+      hours: 60
+      description: UI for inputting and managing API keys for Bybit real-time strategy execution.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /v5/account/info)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on validation success
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key, display balance
+          - Toast notification on success
+        full:
+          - Support 1 exchange, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: How to create an API key input UI in Wails for strategy execution? Examples of AES-256 encryption.
+    - id: FE5
+      title: Strategy Execution UI
+      priority: Medium
+      hours: 60
+      description: UI for executing strategies in real-time on Bybit (CEX) and Uniswap (DeFi).
+      functionality:
+        - Start/stop buttons for strategy execution
+        - Real-time status: Active trades, performance
+        - Notification: Toast on trade execution
+        - Animation: Progress bar for execution
+      api:
+        endpoint: /api/strategy/execute
+        request:
+          method: POST
+          path: /api/strategy/execute
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            strategyId: 123
+            platform: bybit
+        response:
+          status: 200
+          body:
+            executionId: 123
+            status: running
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Start RSI strategy on Bybit
+          - Toast notification on trade
+        full:
+          - Support Bybit/Uniswap, 1,000 executions/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid strategy: Show "Invalid Strategy"
+          - API error: Show "Execution Failed"
+      prompt: How to create a strategy execution UI in React Native? Examples of real-time status.
+    - id: FE6
+      title: Strategy Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to strategy modeling (e.g., simulation completed, trade executed).
+      functionality:
+        - Toast notifications: Simulation done, trade executed
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: strategy
+            message: Simulation 456 completed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for simulation completion
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for strategy modeling in Wails? Examples of toast animations.
+    - id: BE1
+      title: Julia Simulation Service
+      priority: High
+      hours: 100
+      description: Backend for running strategy simulations using Julia (e.g., Monte Carlo).
+      functionality:
+        - Simulation: Monte Carlo for 1000 iterations
+        - Inputs: Strategy parameters, historical data
+        - Notification: Trigger WebSocket on completion
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/simulate
+        request:
+          method: POST
+          path: /api/strategy/simulate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            iterations: 1000
+            timeframe: 1y
+        response:
+          status: 200
+          body:
+            simulationId: 456
+            results:
+              returns: 0.15
+              maxDrawdown: 0.1
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Run 1000-iteration simulation for BTC
+          - Send WebSocket notification
+        full:
+          - 1,000 simulations/min, 5 strategies
+          - ELK logs
+        error:
+          - Invalid parameters: 400 error, ELK log
+          - Simulation failure: 500 error, ELK log
+      prompt: How to run Monte Carlo simulations with Julia? Examples of API integration.
+    - id: BE2
+      title: Backtesting Service
+      priority: Medium
+      hours: 80
+      description: Backend for backtesting strategies against historical data from Bybit/Chainlink.
+      functionality:
+        - Backtest: RSI strategy on 1-year data
+        - Data sources: Bybit API, Chainlink oracles
+        - Notification: Trigger WebSocket on completion
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/backtest
+        request:
+          method: POST
+          path: /api/strategy/backtest
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            period: 2024-06-01:2025-06-01
+            dataSource: bybit
+        response:
+          status: 200
+          body:
+            backtestId: 789
+            results:
+              returns: 0.12
+              sharpeRatio: 1.3
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Backtest RSI strategy for BTC
+          - Send WebSocket notification
+        full:
+          - 1,000 backtests/min, 2 data sources
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Data failure: 500 error, ELK log
+      prompt: How to backtest strategies with Bybit and Chainlink data? Examples of historical data APIs.
+    - id: BE3
+      title: ML Optimization Service
+      priority: Medium
+      hours: 80
+      description: Backend for optimizing strategy parameters using machine learning (Random Forest).
+      functionality:
+        - Optimization: Random Forest for parameter tuning
+        - Inputs: Strategy data, historical performance
+        - Notification: Trigger WebSocket on optimization
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/optimize
+        request:
+          method: POST
+          path: /api/strategy/optimize
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            algorithm: random_forest
+        response:
+          status: 200
+          body:
+            optimizationId: 123
+            parameters:
+              period: 14
+              overbought: 75
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Optimize RSI parameters for BTC
+          - Send WebSocket notification
+        full:
+          - 1,000 optimizations/min, 2 algorithms
+          - ELK logs
+        error:
+          - Invalid strategy: 400 error, ELK log
+          - ML failure: 500 error, ELK log
+      prompt: How to optimize trading strategies with Random Forest in Julia? Examples of ML APIs.
+    - id: BE4
+      title: Real-Time Execution Service (CEX)
+      priority: Medium
+      hours: 60
+      description: Backend proxy for executing strategies in real-time on Bybit.
+      functionality:
+        - Proxy to Bybit /v5/order/create
+        - Validation: Balance, order parameters
+        - Notification: Trigger WebSocket on trade
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/execute
+        request:
+          method: POST
+          path: /api/strategy/execute
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            strategyId: 123
+            platform: bybit
+        response:
+          status: 200
+          body:
+            executionId: 123
+            status: running
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Execute RSI strategy trade on Bybit
+          - Send WebSocket notification
+        full:
+          - 1,000 executions/min, 5 assets
+          - ELK logs
+        error:
+          - Invalid key: 403 error, ELK log
+          - Insufficient balance: 400 error, ELK log
+      prompt: How to execute trading strategies on Bybit? Examples of order execution APIs.
+    - id: BE5
+      title: Real-Time Execution Service (DeFi)
+      priority: Medium
+      hours: 60
+      description: Backend for executing strategies on Uniswap using Web3.js.
+      functionality:
+        - Smart contract: Execute trades on Uniswap V3
+        - Validation: Token approvals, liquidity
+        - Notification: Trigger WebSocket on trade
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/defi
+        request:
+          method: POST
+          path: /api/strategy/defi
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            strategyId: 123
+            platform: uniswap
+        response:
+          status: 200
+          body:
+            executionId: 456
+            status: executed
+            txHash: 0x123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Execute trade on Uniswap
+          - Send WebSocket notification
+        full:
+          - 1,000 executions/min, 5 assets
+          - ELK logs
+        error:
+          - Insufficient liquidity: 400 error, ELK log
+          - Smart contract failure: 500 error, ELK log
+      prompt: How to execute DeFi trades on Uniswap with Web3.js? Examples of smart contract calls.
+    - id: BE6
+      title: Strategy Logs Service
+      priority: Medium
+      hours: 60
+      description: Backend for logging strategy simulations, backtests, and executions.
+      functionality:
+        - Storage: ELK Stack for logs
+        - Query: Search by strategy, date
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/strategy/logs
+        request:
+          method: GET
+          path: /api/strategy/logs?userId=u123&strategyId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            logs:
+              - timestamp: 2025-06-15T12:00:00Z
+                type: simulation
+                message: Simulation completed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store 100 simulation logs
+          - Retrieve in < 50ms
+        full:
+          - 1,000 logs/min, query support
+          - ELK logs
+        error:
+          - Invalid query: 400 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to log strategy data with ELK Stack? Examples of log queries.
+    - id: BE7
+      title: Strategy Modeling Testing
+      priority: Medium
+      hours: 60
+      description: Testing for simulation, backtesting, optimization, and execution services.
+      functionality:
+        - Unit tests: Test.jl for Julia APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test strategy modeling services with Test.jl and Locust? Examples of test cases.
+    - id: BE8
+      title: Strategy Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast strategy-related notifications via WebSocket.
+      functionality:
+        - Triggers: Simulation completed, trade executed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: strategy
+            message: Simulation 456 completed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast simulation notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for strategy modeling? Examples of Redis queuing.
+services:
+  - name: Strategy Simulation Service
+    description: Runs strategy simulations using Julia
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for strategy modeling
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Strategy Simulation
+      type: AWS EC2
+      specs:
+        instance: m5.2xlarge
+        cores: 8
+        ram: 32GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

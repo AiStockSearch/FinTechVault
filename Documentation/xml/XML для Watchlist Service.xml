@@ -1,0 +1,69 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserWatchList id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <WatchList>
+        <WatchItem id="wl001">
+            <Symbol>SOL</Symbol>
+            <Type>crypto</Type>
+            <ContractAddress>0x1111111111111111</ContractAddress>
+            <Triggers>
+                <Trigger type="price" condition="equals" value="200.00" enabled="true"/>
+                <Trigger type="volume" condition="increase" value="20" enabled="false"/>
+                <Trigger type="volatility" condition="increase" value="10" enabled="true"/>
+            </Triggers>
+            <LastPriceUSD>200.00</LastPriceUSD>
+            <Source>bybit</Source>
+            <PreferredDeFiProtocols>
+                <Protocol>uniswap</Protocol>
+                <Protocol>sushiswap</Protocol>
+            </PreferredDeFiProtocols>
+            <Analytics>
+                <Volatility>15.5</Volatility>
+                <CorrelationWithBTC>0.85</CorrelationWithBTC>
+                <RSI>65</RSI>
+            </Analytics>
+        </WatchItem>
+        <WatchItem id="wl002">
+            <Symbol>ETH</Symbol>
+            <Type>crypto</Type>
+            <ContractAddress>0x3333333333333333</ContractAddress>
+            <Triggers>
+                <Trigger type="price" condition="decrease" value="5" enabled="true"/>
+                <Trigger type="rsi" condition="below" value="30" enabled="true"/>
+            </Triggers>
+            <LastPriceUSD>2500.00</LastPriceUSD>
+            <Source>uniswap</Source>
+            <PreferredDeFiProtocols>
+                <Protocol>sushiswap</Protocol>
+                <Protocol>curve</Protocol>
+            </PreferredDeFiProtocols>
+            <Analytics>
+                <Volatility>12.0</Volatility>
+                <CorrelationWithBTC>0.90</CorrelationWithBTC>
+                <RSI>70</RSI>
+            </Analytics>
+        </WatchItem>
+        <WatchItem id="wl003">
+            <Symbol>BoredApe#1234</Symbol>
+            <Type>nft</Type>
+            <TokenID>1234</TokenID>
+            <ContractAddress>0x2222222222222222</ContractAddress>
+            <Triggers>
+                <Trigger type="volume" condition="increase" value="20" enabled="true"/>
+                <Trigger type="floor_price" condition="increase" value="10" enabled="true"/>
+            </Triggers>
+            <LastPriceUSD>500.00</LastPriceUSD>
+            <Source>opensea</Source>
+            <PreferredDeFiProtocols>
+                <Protocol>none</Protocol>
+            </PreferredDeFiProtocols>
+            <Analytics>
+                <Volatility>20.0</Volatility>
+                <FloorPriceUSD>450.00</FloorPriceUSD>
+            </Analytics>
+        </WatchItem>
+    </WatchList>
+</UserWatchList>
+```
+
+**Пояснение**: Этот сервис хранит watch-лист с активами, триггерами (цена, объем, RSI), аналитикой (волатильность, корреляция) и предпочтениями DeFi-протоколов.

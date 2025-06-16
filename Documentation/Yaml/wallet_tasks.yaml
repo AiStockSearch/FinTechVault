@@ -1,0 +1,504 @@
+epic:
+  id: 6974e0e3-cfb2-4f34-8131-85618ddf947b
+  title: Wallet
+  priority: High
+  duration_weeks: 8
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Wallet Connection UI
+      priority: High
+      hours: 80
+      description: Develop a UI for connecting EVM (MetaMask/WalletConnect) and Cosmos wallets to manage assets.
+      functionality:
+        - Connect buttons: MetaMask, WalletConnect, Cosmos Keplr
+        - Display: Wallet address, chain (Polygon, Cosmos)
+        - Notification: Toast on successful connection
+        - Animation: Connection progress
+      api:
+        endpoint: /api/wallet/connect
+        request:
+          method: POST
+          path: /api/wallet/connect
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            wallet: metamask
+            chain: polygon
+        response:
+          status: 200
+          body:
+            address: 0x123...
+            chain: polygon
+            status: connected
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Connect MetaMask on Polygon, display address
+          - Toast notification on success
+        full:
+          - Support 3 wallets, 2 chains, 1,000 connections/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid wallet: Show "Connection Failed"
+          - Chain mismatch: Show "Unsupported Chain"
+      prompt: How to create a wallet connection UI in React Native with MetaMask? Examples of Web3.js integration.
+    - id: FE2
+      title: Internal Transfers UI
+      priority: High
+      hours: 60
+      description: UI for initiating internal transfers between wallet addresses (EVM, Cosmos).
+      functionality:
+        - Form: Asset (USDT, ETH), amount, recipient address
+        - Autocomplete: Address suggestions
+        - Confirmation: Modal with gas estimate
+        - Notification: Toast on transfer success
+      api:
+        endpoint: /api/wallet/transfer
+        request:
+          method: POST
+          path: /api/wallet/transfer
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: USDT
+            amount: 100
+            toAddress: 0x456...
+            chain: polygon
+        response:
+          status: 200
+          body:
+            transferId: 123
+            status: completed
+            txHash: 0x789...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Transfer 100 USDT on Polygon
+          - Toast notification on success
+        full:
+          - Support 5 assets, 2 chains, 1,000 transfers/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid address: Show "Invalid Address"
+          - Insufficient balance: Show "Insufficient Funds"
+      prompt: How to create an internal transfer UI in Wails? Examples of address autocomplete.
+    - id: FE3
+      title: Wallet Balance UI
+      priority: Medium
+      hours: 60
+      description: UI for displaying wallet balances across EVM and Cosmos chains.
+      functionality:
+        - Table: Asset, balance, chain
+        - Refresh button: Update balances
+        - Animation: Balance loading spinner
+        - Notification: Toast on balance update
+      api:
+        endpoint: /api/wallet/balance
+        request:
+          method: GET
+          path: /api/wallet/balance?userId=u123&chain=polygon
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            balances:
+              - asset: USDT
+                balance: 1000
+                chain: polygon
+              - asset: ETH
+                balance: 2
+                chain: polygon
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display USDT balance on Polygon
+          - Toast notification on refresh
+        full:
+          - Support 5 assets, 2 chains, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No wallet connected: Show "Wallet Not Connected"
+          - API error: Show "Balance Fetch Failed"
+      prompt: How to create a wallet balance UI in React Native? Examples of balance tables.
+    - id: FE4
+      title: Transaction History UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing wallet transaction history with filters.
+      functionality:
+        - Table: Date, asset, amount, txHash, status
+        - Filters: Date range, chain, asset
+        - Pagination: 50 transactions/page
+        - Notification: Toast on history refresh
+      api:
+        endpoint: /api/wallet/history
+        request:
+          method: GET
+          path: /api/wallet/history?userId=u123&chain=polygon&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            transactions:
+              - date: 2025-06-01T12:00:00Z
+                asset: USDT
+                amount: 100
+                txHash: 0x789...
+                status: confirmed
+            total: 100
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 USDT transactions
+          - Toast notification on refresh
+        full:
+          - Support 2 chains, 1,000 transactions/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty history: Show "No Transactions"
+          - API error: Show "History Fetch Failed"
+      prompt: How to create a transaction history UI in Wails? Examples of pagination.
+    - id: FE5
+      title: Wallet Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for wallet transaction and balance analytics with graphs.
+      functionality:
+        - Graphs: Transaction volume, balance trends (Recharts)
+        - Filters: Date, chain, asset
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/wallet/analytics
+        request:
+          method: GET
+          path: /api/wallet/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                volume: 1000
+                balance: 2000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display transaction volume graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 updates/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a wallet analytics dashboard in React Native? Examples of Recharts.
+    - id: FE6
+      title: Wallet Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to wallet actions (e.g., transfer completed, balance updated).
+      functionality:
+        - Toast notifications: Transfer success, balance update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: wallet
+            message: Transfer of 100 USDT completed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for transfer
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for wallet actions in Wails? Examples of toast animations.
+    - id: BE1
+      title: EVM Address Management Service
+      priority: High
+      hours: 60
+      description: Backend for generating and managing EVM wallet addresses using ECDSA.
+      functionality:
+        - Generation: Create new addresses (Polygon, Ethereum)
+        - Storage: PostgreSQL (encrypted)
+        - Notification: Trigger WebSocket on address creation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/wallet/address
+        request:
+          method: POST
+          path: /api/wallet/address
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            chain: polygon
+        response:
+          status: 200
+          body:
+            address: 0x123...
+            chain: polygon
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Generate Polygon address
+          - Send WebSocket notification
+        full:
+          - 1,000 addresses/min, 2 chains
+          - ELK logs
+        error:
+          - Invalid chain: 400 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to generate EVM addresses with ECDSA? Examples of PostgreSQL storage.
+    - id: BE2
+      title: Cosmos Payment Service
+      priority: High
+      hours: 60
+      description: Backend for processing payments and transfers on Cosmos with multisig support.
+      functionality:
+        - Payments: USDT transfers on Cosmos
+        - Multisig: 2/3 signatures for high-value transfers
+        - Notification: Trigger WebSocket on payment
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/wallet/cosmos
+        request:
+          method: POST
+          path: /api/wallet/cosmos
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: USDT
+            amount: 100
+            toAddress: cosmos1xyz...
+            multisig: true
+        response:
+          status: 200
+          body:
+            paymentId: 456
+            status: pending
+            txHash: cosmos_tx_789...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Process 100 USDT payment on Cosmos
+          - Send WebSocket notification
+        full:
+          - 1,000 payments/min, multisig support
+          - ELK logs
+        error:
+          - Invalid address: 400 error, ELK log
+          - Multisig failure: 403 error, ELK log
+      prompt: How to process Cosmos payments with multisig? Examples of Cosmos SDK integration.
+    - id: BE3
+      title: Wallet Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting wallet transaction and balance analytics with Matomo.
+      functionality:
+        - Metrics: Transaction volume, balance trends
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/wallet/analytics
+        request:
+          method: GET
+          path: /api/wallet/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                volume: 1000
+                balance: 2000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 10 transactions in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect wallet analytics with Matomo? Examples of analytics APIs.
+    - id: BE4
+      title: Real-Time Balance Updates Service
+      priority: Medium
+      hours: 60
+      description: Backend for real-time wallet balance updates via WebSocket.
+      functionality:
+        - Updates: Poll blockchain for balance changes
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/wallet/balance
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/wallet/balance?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            address: 0x123...
+            chain: polygon
+            balances:
+              - asset: USDT
+                balance: 1000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast USDT balance update
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 updates/min, 2 chains
+          - ELK logs
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to implement real-time wallet balance updates with WebSocket? Examples of Redis queuing.
+    - id: BE5
+      title: Wallet Testing
+      priority: Medium
+      hours: 60
+      description: Testing for address management, payments, analytics, and balance updates services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test wallet services with Locust? Examples of test cases.
+    - id: BE6
+      title: Wallet Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast wallet-related notifications via WebSocket.
+      functionality:
+        - Triggers: Transfer completed, balance updated
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: wallet
+            message: Transfer of 100 USDT completed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast transfer notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for wallet actions? Examples of Redis queuing.
+services:
+  - name: Wallet Management Service
+    description: Manages EVM and Cosmos wallet addresses and payments
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - PostgreSQL
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for wallet actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Wallet Management
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, PostgreSQL)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

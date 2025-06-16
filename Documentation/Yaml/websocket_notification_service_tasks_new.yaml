@@ -1,0 +1,462 @@
+epic:
+  id: c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d
+  title: WebSocket Notification Service
+  priority: High
+  duration_weeks: 8
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Notification Center UI
+      priority: High
+      hours: 60
+      description: Develop a UI for displaying and managing real-time notifications across all platform features.
+      functionality:
+        - List: Notification type, message, timestamp
+        - Filters: Type (trade, donation, DAO), date
+        - Actions: Mark as read, clear
+        - Notification: Toast on new notification
+      api:
+        endpoint: /api/notifications/history
+        request:
+          method: GET
+          path: /api/notifications/history?userId=u123&startDate=2025-06-01&type=trade
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            notifications:
+              - id: 123
+                type: trade
+                message: Trade 456 executed
+                timestamp: 2025-06-15T14:27:00Z
+            total: 100
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 trade notifications
+          - Toast notification on new event
+        full:
+          - Support 1,000 notifications/min, 5 types
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Notifications"
+          - API error: Show "History Fetch Failed"
+      prompt: How to create a notification center UI in React Native? Examples of notification lists.
+    - id: FE2
+      title: Notification Settings UI
+      priority: Medium
+      hours: 60
+      description: UI for configuring notification preferences (e.g., enable/disable types, channels).
+      functionality:
+        - Toggles: Trade, donation, DAO notifications
+        - Channels: WebSocket, push (Firebase), email
+        - Save settings to user profile
+        - Notification: Toast on settings save
+      api:
+        endpoint: /api/notifications/settings
+        request:
+          method: POST
+          path: /api/notifications/settings
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            preferences:
+              trade: true
+              donation: false
+              dao: true
+              channels:
+                websocket: true
+                push: true
+                email: false
+        response:
+          status: 200
+          body:
+            status: saved
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Enable trade notifications
+          - Toast notification on save
+        full:
+          - Support 5 types, 3 channels, 1,000 saves/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid settings: Show "Invalid Settings"
+          - API error: Show "Settings Save Failed"
+      prompt: How to create a notification settings UI in Wails? Examples of toggle components.
+    - id: FE3
+      title: Real-Time Notification UI
+      priority: High
+      hours: 60
+      description: UI for displaying real-time WebSocket notifications with interactive elements.
+      functionality:
+        - Toast notifications: Trade executed, donation received
+        - Interactive: Click to view details (e.g., trade ID)
+        - Animation: Fade-in toasts
+        - Notification: Toast stacking for multiple events
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: trade
+            message: Trade 456 executed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for trade notification
+          - Click navigates to trade details
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to create a real-time notification UI with WebSocket in React Native? Examples of toast stacking.
+    - id: FE4
+      title: Notification Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for notification delivery analytics with graphs.
+      functionality:
+        - Graphs: Delivery rate, user engagement (Recharts)
+        - Filters: Date, type, channel
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/notifications/analytics
+        request:
+          method: GET
+          path: /api/notifications/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                deliveries: 1000
+                engagement: 0.8
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display delivery rate graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a notification analytics dashboard in Wails? Examples of Recharts.
+    - id: BE1
+      title: WebSocket Server Service
+      priority: High
+      hours: 80
+      description: Backend for running a WebSocket server to broadcast real-time notifications.
+      functionality:
+        - Server: Handle 10,000 client connections
+        - Authentication: JWT-based
+        - Queue: Redis for message buffering
+        - Notification: Broadcast on event
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: trade
+            message: Trade 456 executed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Handle 100 client connections
+          - Broadcast trade notification
+        full:
+          - 10,000 clients, 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket server on AWS EC2? Examples of Redis integration.
+    - id: BE2
+      title: Notification Trigger Service
+      priority: High
+      hours: 60
+      description: Backend for triggering notifications based on platform events (e.g., trade, donation).
+      functionality:
+        - Triggers: Event listeners for platform services
+        - Message generation: Formatted notifications
+        - Queue: Redis for dispatching
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/notifications/trigger
+        request:
+          method: POST
+          path: /api/notifications/trigger
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            type: trade
+            message: Trade 456 executed
+        response:
+          status: 200
+          body:
+            status: queued
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Trigger trade notification
+          - Redis queue processes message
+        full:
+          - 1,000 triggers/min, 10 types
+          - ELK logs
+        error:
+          - Invalid event: 400 error, ELK log
+          - Queue failure: 500 error, ELK log
+      prompt: How to create a notification trigger service with Redis? Examples of event listeners.
+    - id: BE3
+      title: Notification Storage Service
+      priority: Medium
+      hours: 60
+      description: Backend for storing notification history in PostgreSQL.
+      functionality:
+        - Storage: PostgreSQL for type, message, timestamp
+        - Indexing: For fast retrieval
+        - Notification: Trigger WebSocket on storage
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/notifications/history
+        request:
+          method: GET
+          path: /api/notifications/history?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            notifications:
+              - id: 123
+                type: trade
+                message: Trade 456 executed
+                timestamp: 2025-06-15T14:27:00Z
+            total: 100
+      deployment: Server (AWS RDS)
+      acceptance_criteria:
+        minimal:
+          - Store 10 notifications
+          - Retrieve in < 50ms
+        full:
+          - 1,000 notifications/min, indexed queries
+          - ELK logs
+        error:
+          - DB failure: 500 error, ELK log
+          - Invalid query: 400 error, ELK log
+      prompt: How to store notifications in PostgreSQL? Examples of indexing.
+    - id: BE4
+      title: Notification Delivery Service
+      priority: Medium
+      hours: 60
+      description: Backend for delivering notifications via multiple channels (WebSocket, push, email).
+      functionality:
+        - Channels: WebSocket, Firebase push, SMTP email
+        - Retry: Failed deliveries (3 attempts)
+        - Notification: Trigger WebSocket on delivery
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/notifications/deliver
+        request:
+          method: POST
+          path: /api/notifications/deliver
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            notificationId: 123
+            channel: push
+        response:
+          status: 200
+          body:
+            status: delivered
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Deliver push notification
+          - Send WebSocket notification
+        full:
+          - 1,000 deliveries/min, 3 channels
+          - ELK logs
+        error:
+          - Delivery failure: 500 error, ELK log
+          - Invalid channel: 400 error, ELK log
+      prompt: How to deliver notifications via Firebase and SMTP? Examples of retry mechanisms.
+    - id: BE5
+      title: Notification Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting notification delivery analytics with Matomo.
+      functionality:
+        - Metrics: Delivery rate, engagement
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/notifications/analytics
+        request:
+          method: GET
+          path: /api/notifications/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                deliveries: 1000
+                engagement: 0.8
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 deliveries in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect notification analytics with Matomo? Examples of analytics APIs.
+    - id: BE6
+      title: WebSocket Notification Testing
+      priority: Medium
+      hours: 60
+      description: Testing for WebSocket server, triggers, storage, delivery, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 notifications/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test WebSocket notification services with Locust? Examples of test cases.
+    - id: BE7
+      title: WebSocket Notification Service
+      priority: High
+      hours: 60
+      description: Backend to manage and broadcast platform-wide notifications via WebSocket.
+      functionality:
+        - Triggers: Platform events (trade, donation, DAO)
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: trade
+            message: Trade 456 executed
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast trade notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to manage WebSocket notifications for platform events? Examples of Redis queuing.
+services:
+  - name: WebSocket Notification Service
+    description: Broadcasts real-time notifications for platform events
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - PostgreSQL
+      - ELK Stack
+  - name: Notification Delivery Service
+    description: Delivers notifications via multiple channels
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Firebase
+      - SMTP
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Notification Delivery
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: Notification Storage
+      type: AWS RDS
+      specs:
+        instance: db.t3.medium
+        storage: 100GB
+  storage: 12TB (S3, PostgreSQL)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

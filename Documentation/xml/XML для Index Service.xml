@@ -1,0 +1,86 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserIndexes id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <Indexes>
+        <Index id="idx001">
+            <Name>Wealth Index</Name>
+            <Description>Diversified crypto index for stable returns</Description>
+            <CreatedAt>2025-06-05T10:00:00Z</CreatedAt>
+            <Components>
+                <Component>
+                    <Symbol>BTC</Symbol>
+                    <Weight>40</Weight>
+                    <ContractAddress>none</ContractAddress>
+                    <Source>bybit</Source>
+                    <Network>none</Network>
+                </Component>
+                <Component>
+                    <Symbol>ETH</Symbol>
+                    <Weight>30</Weight>
+                    <ContractAddress>0x3333333333333333</ContractAddress>
+                    <Source>uniswap</Source>
+                    <Network>polygon</Network>
+                </Component>
+                <Component>
+                    <Symbol>SOL</Symbol>
+                    <Weight>20</Weight>
+                    <ContractAddress>0x1111111111111111</ContractAddress>
+                    <Source>uniswap</Source>
+                    <Network>polygon</Network>
+                </Component>
+                <Component>
+                    <Symbol>USDT</Symbol>
+                    <Weight>10</Weight>
+                    <ContractAddress>0x5555555555555555</ContractAddress>
+                    <Source>okx</Source>
+                    <Network>none</Network>
+                </Component>
+            </Components>
+            <TotalValueUSD>1000.00</TotalValueUSD>
+            <ReturnPercentage>2.0</ReturnPercentage>
+            <TradeHistory>
+                <Trade id="tr_idx001" type="buy" amountUSD="1000.00" executedAt="2025-06-05T10:30:00Z" source="bybit"/>
+                <Trade id="tr_idx002" type="rebalance" amountUSD="0.00" executedAt="2025-06-10T12:00:00Z" source="uniswap"/>
+            </TradeHistory>
+            <PreferredDeFiProtocols>
+                <Protocol>uniswap</Protocol>
+                <Protocol>sushiswap</Protocol>
+            </PreferredDeFiProtocols>
+            <RiskMetrics>
+                <Volatility>12.0</Volatility>
+                <MaxDrawdown>4.0</MaxDrawdown>
+                <ValueAtRisk>2.8</ValueAtRisk>
+                <SharpeRatio>1.0</SharpeRatio>
+                <CalculationDate>2025-06-11T22:00:00Z</CalculationDate>
+                <History>
+                    <MetricSnapshot timestamp="2025-06-10T22:00:00Z">
+                        <Volatility>11.8</Volatility>
+                        <MaxDrawdown>3.9</MaxDrawdown>
+                        <ValueAtRisk>2.7</ValueAtRisk>
+                        <SharpeRatio>0.95</SharpeRatio>
+                    </MetricSnapshot>
+                </History>
+            </RiskMetrics>
+            <PerformanceMetrics>
+                <AnnualizedReturn>15.0</AnnualizedReturn>
+                <Beta>0.9</Beta>
+                <Alpha>0.02</Alpha>
+            </PerformanceMetrics>
+            <Sharing>
+                <QRCode id="qr_idx_001">
+                    <URL>https://example.com/qr/idx001</URL>
+                    <GeneratedAt>2025-06-05T10:30:00Z</GeneratedAt>
+                    <UsageCount>15</UsageCount>
+                </QRCode>
+                <SocialLinks>
+                    <Link platform="x" url="https://x.com/share/idx001" shareCount="30"/>
+                    <Link platform="telegram" url="https://t.me/share/idx001" shareCount="20"/>
+                    <Link platform="discord" url="https://discord.com/share/idx001" shareCount="10"/>
+                </SocialLinks>
+            </Sharing>
+        </Index>
+    </Indexes>
+</UserIndexes>
+```
+
+**Пояснение**: Этот сервис хранит пользовательские индексы, их компоненты, торговую историю, риск-метрики, производительность и шаринг (QR-коды, социальные ссылки).

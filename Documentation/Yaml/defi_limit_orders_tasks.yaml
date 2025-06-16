@@ -1,0 +1,110 @@
+epic:
+  id: a58fc8fb-7839-4ace-9449-ad06a58391ed
+  title: DeFi Limit Orders
+  priority: High
+  duration_weeks: 12
+  dependencies: [b38123fb-2c78-4a70-a288-5e702c1ce60f, 844b680c-1095-4a51-aa8f-799ac92e78f1, 6974e0e3-cfb2-4f34-8131-85618ddf947b]
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    # Frontend
+    - id: FE1
+      title: Limit Order UI
+      priority: High
+      hours: 80
+      description: UI for placing DeFi limit orders on Uniswap V3 with Web3 wallet integration.
+      functionality: [Order form, Web3 wallet connect, Order status]
+      api: {endpoint: /api/defi/order, request: {method: POST, path: /api/defi/order, body: {asset: SOL, amount: 2, price: 200}}, response: {status: 200, body: {orderId: 123}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Place SOL order], full: [1,000 orders/min, localization], error: [Invalid wallet: Show error]}
+    - id: FE2
+      title: 2FA/NFC UI
+      priority: Medium
+      hours: 60
+      description: UI for 2FA/NFC confirmation of DeFi orders.
+      functionality: [2FA input, NFC scan, Confirmation modal]
+      api: {endpoint: /api/auth/confirm, request: {method: POST, path: /api/auth/confirm, body: {2faCode: 123456}}, response: {status: 200, body: {status: confirmed}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Confirm with 2FA], full: [1,000 confirmations/min], error: [Invalid 2FA: Show error]}
+    - id: FE3
+      title: Order Animations
+      priority: Low
+      hours: 60
+      description: Animations for DeFi order placement and status updates.
+      functionality: [Progress bar, Success toast, Notification]
+      api: {endpoint: /api/defi/status, request: {method: GET, path: /api/defi/status?orderId=123}, response: {status: 200, body: {status: executed}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Show progress], full: [Animations, localization], error: [No status: Show error]}
+    - id: FE4
+      title: Web3 Wallet UI
+      priority: High
+      hours: 60
+      description: UI for connecting MetaMask/WalletConnect for DeFi orders.
+      functionality: [Connect button, Wallet status, Notification]
+      api: {endpoint: /api/web3/connect, request: {method: POST, path: /api/web3/connect, body: {wallet: metamask}}, response: {status: 200, body: {address: 0x123...}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Connect MetaMask], full: [1,000 connections/min], error: [Invalid wallet: Show error]}
+    - id: FE5
+      title: DeFi Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for DeFi order analytics with graphs.
+      functionality: [Filters, Recharts graphs, CSV export, Notification]
+      api: {endpoint: /api/defi/analytics, request: {method: GET, path: /api/defi/analytics?startDate=2025-06-01}, response: {status: 200, body: {data: [{date: 2025-06-01, volume: 1000}]}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Graph 10 orders], full: [5 metrics, localization], error: [No data: Show error]}
+    - id: FE6
+      title: DeFi Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time DeFi order notifications via WebSocket.
+      functionality: [Toast notifications, History list, Animation]
+      api: {endpoint: /ws/notifications, request: {method: WebSocket, path: ws://api.wealthproject.com/ws/notifications?userId=u123}, response: {status: 200, body: {type: order, message: Order executed}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Toast for order], full: [1,000 notifications/min], error: [Disconnect: Show error]}
+    # Backend
+    - id: BE1
+      title: Uniswap V3 Integration
+      priority: High
+      hours: 100
+      description: Backend for placing limit orders on Uniswap V3 using Web3.js.
+      functionality: [Smart contract interaction, Order validation, Notification]
+      api: {endpoint: /api/defi/order, request: {method: POST, path: /api/defi/order, body: {asset: SOL, amount: 2}}, response: {status: 200, body: {orderId: 123}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Place SOL order], full: [1,000 orders/min], error: [Invalid order: 400 error]}
+    - id: BE2
+      title: Additional Protocols Integration
+      priority: Medium
+      hours: 80
+      description: Integrate Sushiswap, Curve for limit orders.
+      functionality: [Smart contract calls, Validation, Notification]
+      api: {endpoint: /api/defi/protocol, request: {method: POST, path: /api/defi/protocol, body: {protocol: sushiswap, asset: ETH}}, response: {status: 200, body: {orderId: 456}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Place ETH order], full: [1,000 orders/min], error: [Invalid protocol: 400 error]}
+    - id: BE3
+      title: DeFi Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting DeFi order analytics with Matomo.
+      functionality: [Metrics collection, Logging, Notification]
+      api: {endpoint: /api/defi/analytics, request: {method: GET, path: /api/defi/analytics?startDate=2025-06-01}, response: {status: 200, body: {data: [{date: 2025-06-01, volume: 1000}]}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Track 10 orders], full: [1,000 records/min], error: [No data: 404 error]}
+    - id: BE4
+      title: Smart Contract Audit
+      priority: High
+      hours: 60
+      description: Audit DeFi smart contracts with OpenZeppelin.
+      functionality: [Security checks, Bug fixes, Logging]
+      api: None
+      deployment: Server (CI/CD)
+      acceptance_criteria: {minimal: [90% coverage], full: [100% audit], error: [Vulnerability: Jira ticket]}
+    - id: BE5
+      title: WebSocket for DeFi Orders
+      priority: Medium
+      hours: 60
+      description: Real-time updates for DeFi order status via WebSocket.
+      functionality: [Broadcast status, Queue, Notification]
+      api: {endpoint: /ws/defi/order, request: {method: WebSocket, path: ws://api.wealthproject.com/ws/defi/order?orderId=123}, response: {status: 200, body: {status: executed}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Update status], full: [1,000 updates/min], error: [Disconnect: CloudWatch alert]}

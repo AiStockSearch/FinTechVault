@@ -1,0 +1,578 @@
+epic:
+  id: 7542beb5-2b5d-45d6-ae02-76c5c44c8abe
+  title: DAO Integration
+  priority: High
+  duration_weeks: 10
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - 1cff2f1e-074b-4a7d-a9ba-89ce0fb3045c # Charity CRUD
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: DAO Campaign Voting UI
+      priority: High
+      hours: 80
+      description: Develop a UI for voting on charitable and crowdfunding campaigns using WTH tokens.
+      functionality:
+        - Form: Campaign ID, vote (yes/no), WTH token amount (200 min)
+        - Display: Vote progress, remaining time
+        - Notification: Toast on vote submission
+        - Animation: Progress bar for vote tally
+      api:
+        endpoint: /api/dao/vote/campaign
+        request:
+          method: POST
+          path: /api/dao/vote/campaign
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            vote: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            voteId: 456
+            status: submitted
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Submit yes vote with 200 WTH tokens
+          - Toast notification on success
+        full:
+          - Support 1,000 votes/min, progress display
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Insufficient tokens: Show "Insufficient Tokens"
+          - API error: Show "Vote Failed"
+      prompt: How to create a DAO voting UI in React Native for campaigns? Examples of progress bars.
+    - id: FE2
+      title: DAO Proposal Creation UI
+      priority: Medium
+      hours: 60
+      description: UI for creating DAO proposals for platform improvements or campaign changes.
+      functionality:
+        - Form: Proposal title, description, category (UI, feature)
+        - Validation: Required fields, description length
+        - Preview: Proposal summary
+        - Notification: Toast on proposal creation
+      api:
+        endpoint: /api/dao/proposal
+        request:
+          method: POST
+          path: /api/dao/proposal
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            title: Add Dark Mode
+            description: Implement dark mode for UI
+            category: ui
+        response:
+          status: 200
+          body:
+            proposalId: 789
+            status: pending
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Create UI proposal
+          - Toast notification on success
+        full:
+          - Support 1,000 proposals/min, 5 categories
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid description: Show "Invalid Description"
+          - API error: Show "Proposal Creation Failed"
+      prompt: How to create a DAO proposal UI in Wails? Examples of form validation.
+    - id: FE3
+      title: DAO Proposal Voting UI
+      priority: Medium
+      hours: 60
+      description: UI for voting on DAO proposals with WTH tokens.
+      functionality:
+        - Form: Proposal ID, vote (yes/no), WTH token amount (200 min)
+        - Display: Vote progress, results
+        - Notification: Toast on vote submission
+        - Animation: Vote progress bar
+      api:
+        endpoint: /api/dao/vote/proposal
+        request:
+          method: POST
+          path: /api/dao/vote/proposal
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            proposalId: 789
+            vote: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            voteId: 123
+            status: submitted
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Submit yes vote with 200 WTH tokens
+          - Toast notification on success
+        full:
+          - Support 1,000 votes/min, progress display
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Insufficient tokens: Show "Insufficient Tokens"
+          - API error: Show "Vote Failed"
+      prompt: How to create a DAO proposal voting UI in React Native? Examples of vote progress bars.
+    - id: FE4
+      title: DAO Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for DAO voting and proposal analytics with graphs.
+      functionality:
+        - Graphs: Vote participation, proposal outcomes (Recharts)
+        - Filters: Date, campaign/proposal
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/dao/analytics
+        request:
+          method: GET
+          path: /api/dao/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                votes: 100
+                proposals: 5
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display vote participation graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a DAO analytics dashboard in Wails? Examples of Recharts.
+    - id: FE5
+      title: Web3 Signature UI
+      priority: Medium
+      hours: 60
+      description: UI for signing DAO votes and proposals using MetaMask/WalletConnect.
+      functionality:
+        - Sign button: Initiate MetaMask signature
+        - Display: Signature status, txHash
+        - Notification: Toast on signature success
+        - Animation: Signature progress
+      api:
+        endpoint: /api/dao/web3
+        request:
+          method: POST
+          path: /api/dao/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            voteId: 456
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            status: signed
+            txHash: 0x789...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Sign vote with MetaMask
+          - Toast notification on success
+        full:
+          - Support 1,000 signatures/min, 2 wallets
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid signature: Show "Invalid Signature"
+          - Wallet error: Show "Signature Failed"
+      prompt: How to create a Web3 signature UI with MetaMask in React Native? Examples of Web3.js.
+    - id: FE6
+      title: DAO Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to DAO actions (e.g., vote submitted, proposal approved).
+      functionality:
+        - Toast notifications: Vote success, proposal update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: dao
+            message: Vote submitted for proposal 789
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for vote submission
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for DAO actions in Wails? Examples of toast animations.
+    - id: BE1
+      title: Campaign Voting Service
+      priority: High
+      hours: 80
+      description: Backend for processing DAO votes on campaigns using WTH tokens on Cosmos.
+      functionality:
+        - Voting: Record votes (yes/no, 200 WTH min)
+        - Multisig: 2/3 approval threshold (Cosmos)
+        - Notification: Trigger WebSocket on vote
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/dao/vote/campaign
+        request:
+          method: POST
+          path: /api/dao/vote/campaign
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            vote: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            voteId: 456
+            status: submitted
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Record yes vote with 200 WTH tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 votes/min, multisig support
+          - ELK logs
+        error:
+          - Insufficient tokens: 403 error, ELK log
+          - Invalid campaign: 404 error, ELK log
+      prompt: How to process DAO votes on Cosmos with multisig? Examples of Cosmos SDK APIs.
+    - id: BE2
+      title: Proposal Voting Service
+      priority: Medium
+      hours: 60
+      description: Backend for processing DAO votes on platform proposals using WTH tokens.
+      functionality:
+        - Voting: Record votes (yes/no, 200 WTH min)
+        - Multisig: 2/3 approval threshold
+        - Notification: Trigger WebSocket on vote
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/dao/vote/proposal
+        request:
+          method: POST
+          path: /api/dao/vote/proposal
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            proposalId: 789
+            vote: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            voteId: 123
+            status: submitted
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Record yes vote with 200 WTH tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 votes/min, multisig support
+          - ELK logs
+        error:
+          - Insufficient tokens: 403 error, ELK log
+          - Invalid proposal: 404 error, ELK log
+      prompt: How to process DAO proposal votes on Cosmos? Examples of vote APIs.
+    - id: BE3
+      title: Proposal Creation Service
+      priority: Medium
+      hours: 60
+      description: Backend for creating and storing DAO proposals with Cosmos integration.
+      functionality:
+        - Creation: Store proposal details
+        - Validation: Required fields, WTH token balance
+        - Storage: PostgreSQL, IPFS for content
+        - Notification: Trigger WebSocket on creation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/dao/proposal
+        request:
+          method: POST
+          path: /api/dao/proposal
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            title: Add Dark Mode
+            description: Implement dark mode for UI
+            category: ui
+        response:
+          status: 200
+          body:
+            proposalId: 789
+            status: pending
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Create UI proposal
+          - Send WebSocket notification
+        full:
+          - 1,000 proposals/min, IPFS storage
+          - ELK logs
+        error:
+          - Invalid description: 400 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to create DAO proposals with Cosmos and IPFS? Examples of proposal APIs.
+    - id: BE4
+      title: Web3 Signature Service
+      priority: Medium
+      hours: 60
+      description: Backend for verifying Web3 signatures for DAO votes and proposals.
+      functionality:
+        - Verification: ECDSA signatures (MetaMask)
+        - Storage: IPFS for signature hashes
+        - Notification: Trigger WebSocket on signature
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/dao/web3
+        request:
+          method: POST
+          path: /api/dao/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            voteId: 456
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            status: signed
+            txHash: 0x789...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Verify MetaMask signature
+          - Send WebSocket notification
+        full:
+          - 1,000 signatures/min, IPFS storage
+          - ELK logs
+        error:
+          - Invalid signature: 403 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to verify Web3 signatures for DAO votes? Examples of ECDSA verification.
+    - id: BE5
+      title: DAO Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting DAO voting and proposal analytics with Matomo.
+      functionality:
+        - Metrics: Votes, participation rates
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/dao/analytics
+        request:
+          method: GET
+          path: /api/dao/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                votes: 100
+                participation: 0.5
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 votes in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect DAO analytics with Matomo? Examples of analytics APIs.
+    - id: BE6
+      title: DAO WebSocket Service
+      priority: Medium
+      hours: 60
+      description: Backend for real-time DAO updates (e.g., votes, proposals) via WebSocket.
+      functionality:
+        - Updates: Vote submitted, proposal approved
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/dao
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/dao?proposalId=789
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            proposalId: 789
+            type: vote
+            message: Vote submitted
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast vote update
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 updates/min
+          - ELK logs
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to implement real-time DAO updates with WebSocket? Examples of Redis queuing.
+    - id: BE7
+      title: DAO Testing
+      priority: Medium
+      hours: 60
+      description: Testing for voting, proposal creation, Web3 signatures, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test DAO services with Locust? Examples of test cases.
+    - id: BE8
+      title: DAO Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast DAO-related notifications via WebSocket.
+      functionality:
+        - Triggers: Vote submitted, proposal approved
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: dao
+            message: Vote submitted for proposal 789
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast vote notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for DAO actions? Examples of Redis queuing.
+services:
+  - name: DAO Governance Service
+    description: Manages DAO voting and proposals on Cosmos
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - PostgreSQL
+      - IPFS
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for DAO actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: DAO Governance
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, IPFS, PostgreSQL)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

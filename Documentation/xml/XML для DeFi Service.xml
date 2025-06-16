@@ -1,0 +1,93 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserDeFiOrders id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <DeFiOrders>
+        <Order id="defi001">
+            <Type>limit</Type>
+            <Asset>
+                <Symbol>SOL</Symbol>
+                <ContractAddress>0x1111111111111111</ContractAddress>
+                <Amount>2.0</Amount>
+            </Asset>
+            <PriceUSD>200.00</PriceUSD>
+            <TotalUSD>400.00</TotalUSD>
+            <Protocol>uniswap</Protocol>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <CreatedAt>2025-06-10T12:00:00Z</CreatedAt>
+            <Status>open</Status>
+            <SmartContractAddress>0x9876543210fedcba</SmartContractAddress>
+            <GasLimit>200000</GasLimit>
+            <GasPriceGwei>30</GasPriceGwei>
+            <SlippageTolerance>0.5</SlippageTolerance>
+            <OrderType>buy</OrderType>
+            <ExpirationDate>2025-06-17T12:00:00Z</ExpirationDate>
+            <Priority>high</Priority>
+        </Order>
+        <Order id="defi002">
+            <Type>limit</Type>
+            <Asset>
+                <Symbol>ETH</Symbol>
+                <ContractAddress>0x3333333333333333</ContractAddress>
+                <Amount>0.5</Amount>
+            </Asset>
+            <PriceUSD>2400.00</PriceUSD>
+            <TotalUSD>1200.00</TotalUSD>
+            <Protocol>sushiswap</Protocol>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <CreatedAt>2025-06-11T10:00:00Z</CreatedAt>
+            <Status>open</Status>
+            <SmartContractAddress>0xfedcba9876543210</SmartContractAddress>
+            <GasLimit>250000</GasLimit>
+            <GasPriceGwei>25</GasPriceGwei>
+            <SlippageTolerance>0.3</SlippageTolerance>
+            <OrderType>buy</OrderType>
+            <ExpirationDate>2025-06-18T10:00:00Z</ExpirationDate>
+            <Priority>medium</Priority>
+        </Order>
+        <Order id="defi003">
+            <Type>lend</Type>
+            <Asset>
+                <Symbol>USDT</Symbol>
+                <ContractAddress>0x5555555555555555</ContractAddress>
+                <Amount>500</Amount>
+            </Asset>
+            <Protocol>aave</Protocol>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <CreatedAt>2025-06-10T15:00:00Z</CreatedAt>
+            <Status>active</Status>
+            <SmartContractAddress>0xabc123def4567890</SmartContractAddress>
+            <InterestRate>4.5</InterestRate>
+            <MaturityDate>2025-12-10T15:00:00Z</MaturityDate>
+            <CollateralAsset>ETH</CollateralAsset>
+            <CollateralAmount>0.2</CollateralAmount>
+        </Order>
+        <Order id="defi004">
+            <Type>swap</Type>
+            <Asset>
+                <Symbol>DAI</Symbol>
+                <ContractAddress>0x6666666666666666</ContractAddress>
+                <Amount>100</Amount>
+            </Asset>
+            <TargetAsset>
+                <Symbol>USDT</Symbol>
+                <ContractAddress>0x5555555555555555</ContractAddress>
+                <Amount>100</Amount>
+            </TargetAsset>
+            <Protocol>curve</Protocol>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <CreatedAt>2025-06-11T12:00:00Z</CreatedAt>
+            <Status>open</Status>
+            <SmartContractAddress>0xdef123abc4567890</SmartContractAddress>
+            <GasLimit>220000</GasLimit>
+            <GasPriceGwei>28</GasPriceGwei>
+            <SlippageTolerance>0.2</SlippageTolerance>
+        </Order>
+    </DeFiOrders>
+</UserDeFiOrders>
+```
+
+**Пояснение**: Этот сервис хранит активные DeFi-сделки (лимиты, лендинг, свопы) на Uniswap, Sushiswap, Aave, Curve, с параметрами (газ, проскальзывание, сроки).

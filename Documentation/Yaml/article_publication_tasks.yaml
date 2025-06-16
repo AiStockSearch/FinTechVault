@@ -1,0 +1,491 @@
+epic:
+  id: ccfe0a81-ba8a-47cb-a200-05dc88dba9bb
+  title: Article Publication
+  priority: Medium
+  duration_weeks: 12
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Article Editor UI
+      priority: High
+      hours: 80
+      description: Develop a WYSIWYG editor for creating and editing articles with multi-language support.
+      functionality:
+        - Rich text editor: Bold, italic, images, links
+        - Language selector: RU, EN, CN (i18next)
+        - Preview mode: Real-time rendering
+        - Notification: Toast on save
+      api:
+        endpoint: /api/article/editor
+        request:
+          method: POST
+          path: /api/article/editor
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            title: Article Title
+            content: <p>Content...</p>
+            language: ru
+        response:
+          status: 200
+          body:
+            articleId: 123
+            status: draft
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Save article in RU with basic formatting
+          - Toast notification on save
+        full:
+          - Support 3 languages, 1,000 saves/min
+          - Real-time preview
+          - WCAG 2.1
+        error:
+          - Invalid content: Show "Invalid Content"
+          - API error: Show "Save Failed"
+      prompt: How to create a WYSIWYG editor in React Native with i18next? Examples of rich text editors.
+    - id: FE2
+      title: Article Preview UI
+      priority: Medium
+      hours: 60
+      description: UI for previewing articles in real-time before publishing.
+      functionality:
+        - Render article content as HTML
+        - Toggle between languages: RU, EN, CN
+        - Animation: Smooth transition on language change
+        - Notification: Toast on preview refresh
+      api:
+        endpoint: /api/article/preview
+        request:
+          method: POST
+          path: /api/article/preview
+          headers:
+            Authorization: Bearer {token}
+          body:
+            articleId: 123
+            language: ru
+        response:
+          status: 200
+          body:
+            content: <p>Preview content...</p>
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Preview RU article in < 1s
+          - Toast notification on refresh
+        full:
+          - Support 3 languages, 1,000 previews/min
+          - Animations
+          - WCAG 2.1
+        error:
+          - Invalid article: Show "Article Not Found"
+          - API error: Show "Preview Failed"
+      prompt: How to create an article preview UI in Wails? Examples of real-time rendering.
+    - id: FE3
+      title: Article Monetization UI
+      priority: Medium
+      hours: 60
+      description: UI for managing article subscriptions and payments (e.g., $5/month).
+      functionality:
+        - Subscription form: Payment method, billing details
+        - Payment confirmation: Stripe integration
+        - Notification: Toast on subscription success
+      api:
+        endpoint: /api/subscription
+        request:
+          method: POST
+          path: /api/subscription
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            plan: monthly
+            amount: 5
+            paymentMethod: stripe
+        response:
+          status: 200
+          body:
+            subscriptionId: 123
+            status: active
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Subscribe to $5 plan
+          - Toast notification on success
+        full:
+          - Support Stripe, 1,000 subscriptions/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid payment: Show "Payment Failed"
+          - API error: Show "Subscription Failed"
+      prompt: How to integrate Stripe in React Native for article subscriptions? Examples of payment forms.
+    - id: FE4
+      title: Article Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for article view analytics with graphs and export options.
+      functionality:
+        - Graphs: Views, engagement time (Recharts)
+        - Filters: Date, article, region
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/article/analytics
+        request:
+          method: GET
+          path: /api/article/analytics?startDate=2025-06-01&endDate=2025-06-15&articleId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                views: 1000
+                engagement: 300
+            totalViews: 5000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display view graph for 1 article
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 views/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create an article analytics dashboard in React Native? Examples of Recharts.
+    - id: FE5
+      title: Article Publication Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for notifications related to article publication (e.g., published, subscription purchased).
+      functionality:
+        - Toast notifications: Article published, subscription activated
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: article
+            message: Article 123 published
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for article publication
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for article publication in Wails? Examples of toast animations.
+    - id: BE1
+      title: Article Transcription and Translation Service
+      priority: High
+      hours: 80
+      description: Backend for transcribing audio and translating articles using Whisper and DeepL.
+      functionality:
+        - Transcription: Audio to text (Whisper)
+        - Translation: RU, EN, CN (DeepL)
+        - Storage: PostgreSQL for metadata
+        - Notification: Trigger WebSocket on completion
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/article/transcribe
+        request:
+          method: POST
+          path: /api/article/transcribe
+          headers:
+            Authorization: Bearer {token}
+          body:
+            articleId: 123
+            audioUrl: s3://bucket/audio.mp3
+            targetLanguage: en
+        response:
+          status: 200
+          body:
+            transcriptionId: 123
+            text: Transcribed text
+            translation: Translated text
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Transcribe 1-minute audio
+          - Translate to EN
+        full:
+          - 1,000 transcriptions/min, 3 languages
+          - WebSocket notification
+          - ELK logs
+        error:
+          - Invalid audio: 400 error, ELK log
+          - Translation failure: 500 error, ELK log
+      prompt: How to integrate Whisper and DeepL for article transcription? Examples of APIs.
+    - id: BE2
+      title: Article Storage on IPFS/Arweave
+      priority: Medium
+      hours: 60
+      description: Backend for storing articles on IPFS/Arweave with encrypted metadata.
+      functionality:
+        - Upload: Articles to IPFS
+        - Permanent storage: Metadata on Arweave
+        - Pinning: Pinata/Infura
+        - Encryption: AES-256
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/storage/article
+        request:
+          method: POST
+          path: /api/storage/article
+          headers:
+            Authorization: Bearer {token}
+          body:
+            articleId: 123
+            content: <p>Content...</p>
+        response:
+          status: 200
+          body:
+            cid: Qm123...
+            url: ipfs://...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store article on IPFS, access in < 2s
+        full:
+          - 1,000 uploads/min, Arweave metadata
+          - ELK logs
+        error:
+          - CID inaccessible: 404 error, ELK log
+          - Encryption failure: 500 error, ELK log
+      prompt: How to store articles on IPFS/Arweave with Pinata? Examples of AES-256 encryption.
+    - id: BE3
+      title: Article Monetization Service
+      priority: Medium
+      hours: 60
+      description: Backend for managing article subscriptions via Stripe and DAO payments.
+      functionality:
+        - Payments: Stripe for $5/month
+        - DAO: WTH token payments
+        - Notification: WebSocket for subscription status
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/subscription
+        request:
+          method: POST
+          path: /api/subscription
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            plan: monthly
+            amount: 5
+            paymentMethod: stripe
+        response:
+          status: 200
+          body:
+            subscriptionId: 123
+            status: active
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Process $5 Stripe payment
+          - Send WebSocket notification
+        full:
+          - 1,000 subscriptions/min, DAO support
+          - ELK logs
+        error:
+          - Payment failure: 400 error, ELK log
+          - DAO error: 500 error, ELK log
+      prompt: How to integrate Stripe and DAO for article subscriptions? Examples of payment APIs.
+    - id: BE4
+      title: Article Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting article view analytics with Matomo and Grafana.
+      functionality:
+        - Metrics: Views, engagement time
+        - Dashboards: Grafana for views by region
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/article/analytics
+        request:
+          method: GET
+          path: /api/article/analytics?startDate=2025-06-01&endDate=2025-06-15
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                views: 1000
+                engagement: 300
+            totalViews: 5000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 views in Grafana
+          - Matomo active
+        full:
+          - 10,000 views/min, 5 metrics
+          - ELK logs
+        error:
+          - Matomo failure: CloudWatch alert
+          - No data: 404 error, ELK log
+      prompt: How to set up Matomo and Grafana for article analytics? Examples of dashboards.
+    - id: BE5
+      title: Article Cache Service
+      priority: Low
+      hours: 60
+      description: Cache article content with Redis to reduce IPFS/Arweave calls.
+      functionality:
+        - Caching: Redis (TTL 5 min)
+        - Invalidation: On article update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/article/cache
+        request:
+          method: GET
+          path: /api/article/cache?articleId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            content: <p>Cached content...</p>
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cache article content
+          - Access in < 20ms
+        full:
+          - 1,000 requests/min, cache invalidation
+          - ELK logs
+        error:
+          - Cache miss: 404 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: How to cache articles with Redis? Examples of cache invalidation.
+    - id: BE6
+      title: Article Publication Testing
+      priority: Medium
+      hours: 60
+      description: Testing for article editor, storage, monetization, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test article publication services with Locust? Examples of test cases.
+    - id: BE7
+      title: Article Publication Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast article publication notifications via WebSocket.
+      functionality:
+        - Triggers: Article published, subscription purchased
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: article
+            message: Article 123 published
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast publication notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for article publication? Examples of Redis queuing.
+services:
+  - name: Article Storage Service
+    description: Stores articles on IPFS/Arweave with encrypted metadata
+    type: Storage
+    deployment: AWS EC2
+    dependencies:
+      - IPFS
+      - Arweave
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for article publication
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Article Storage
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, IPFS, Arweave)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

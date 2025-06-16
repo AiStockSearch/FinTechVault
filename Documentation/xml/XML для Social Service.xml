@@ -1,0 +1,52 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserSocial id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <SocialIntegrations>
+        <Integration id="soc001">
+            <Platform>x</Platform>
+            <Handle>@JohnDoeTrader</Handle>
+            <LinkedAt>2025-06-01T12:00:00Z</LinkedAt>
+            <AccessToken>encrypted:ZmRzZGZmZGZkZGYzZg==</AccessToken>
+            <Permissions>
+                <Permission>post</Permission>
+                <Permission>read</Permission>
+            </Permissions>
+            <Analytics>
+                <Followers>500</Followers>
+                <EngagementRate>3.5</EngagementRate>
+                <Posts>20</Posts>
+                <Impressions>10000</Impressions>
+            </Analytics>
+        </Integration>
+        <Integration id="soc002">
+            <Platform>telegram</Platform>
+            <Handle>@JohnDoeCrypto</Handle>
+            <LinkedAt>2025-06-02T15:00:00Z</LinkedAt>
+            <AccessToken>encrypted:YmFzZGZmZGZkZGYzZg==</AccessToken>
+            <Permissions>
+                <Permission>post</Permission>
+            </Permissions>
+            <Analytics>
+                <Subscribers>200</Subscribers>
+                <EngagementRate>2.0</EngagementRate>
+                <Messages>50</Messages>
+            </Analytics>
+        </Integration>
+        <Integration id="soc003">
+            <Platform>discord</Platform>
+            <Handle>JohnDoe#1234</Handle>
+            <LinkedAt>2025-06-03T10:00:00Z</LinkedAt>
+            <AccessToken>encrypted:WmFzZGZmZGZkZGYzZg==</AccessToken>
+            <Permissions>
+                <Permission>post</Permission>
+            </Permissions>
+            <Analytics>
+                <ServerMembers>100</ServerMembers>
+                <Messages>30</Messages>
+            </Analytics>
+        </Integration>
+    </SocialIntegrations>
+</UserSocial>
+```
+
+**Пояснение**: Этот сервис хранит интеграции с социальными платформами (X, Telegram, Discord), токены доступа, аналитику (подписчики, engagement).

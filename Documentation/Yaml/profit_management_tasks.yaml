@@ -1,0 +1,505 @@
+epic:
+  id: 2d6e05de-d418-40bb-94c5-6dc3dea05ba1
+  title: Profit Management
+  priority: High
+  duration_weeks: 10
+  dependencies:
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+  tasks:
+    - id: FE1
+      title: Profit Distribution Setup UI
+      priority: High
+      hours: 80
+      description: Develop a UI for configuring profit distribution rules (e.g., 20% USDT reinvestment, 80% withdrawal).
+      functionality:
+        - Form: Allocation percentages, withdrawal methods (Stripe, Cosmos)
+        - Validation: Total allocation = 100%
+        - Preview: Simulated distribution outcome
+        - Notification: Toast on rule save
+      api:
+        endpoint: /api/profit/rules
+        request:
+          method: POST
+          path: /api/profit/rules
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            rules:
+              - asset: USDT
+                reinvest: 0.2
+                withdraw: 0.8
+                method: stripe
+        response:
+          status: 200
+          body:
+            ruleId: 123
+            status: saved
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Save 20% USDT reinvestment rule
+          - Toast notification on success
+        full:
+          - Support 5 assets, 1,000 rules/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid allocation: Show "Allocations Must Total 100%"
+          - API error: Show "Rule Save Failed"
+      prompt: How to create a profit distribution UI in React Native? Examples of allocation validation.
+    - id: FE2
+      title: Payout History UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing payout history with filters and export options.
+      functionality:
+        - Table: Date, amount, asset, method, status
+        - Filters: Date range, asset, method
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/profit/history
+        request:
+          method: GET
+          path: /api/profit/history?userId=u123&startDate=2025-06-01&endDate=2025-06-15
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            payouts:
+              - date: 2025-06-01
+                amount: 40
+                asset: USDT
+                method: stripe
+                status: completed
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 USDT payouts
+          - Toast notification on export
+        full:
+          - 1,000 payouts/min, CSV export
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Payouts"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a payout history UI in Wails? Examples of table filters.
+    - id: FE3
+      title: API Keys UI for Profit Management
+      priority: Medium
+      hours: 60
+      description: UI for inputting and managing API keys for Bybit balance checks in profit management.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /v5/account/info)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on validation success
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key, display balance
+          - Toast notification on success
+        full:
+          - Support 1 exchange, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: How to create an API key input UI in React Native for profit management? Examples of AES-256 encryption.
+    - id: FE4
+      title: Profit Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for profit distribution analytics with graphs and export options.
+      functionality:
+        - Graphs: Reinvested vs. withdrawn amounts (Recharts)
+        - Filters: Date, asset, method
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/profit/analytics
+        request:
+          method: GET
+          path: /api/profit/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                reinvested: 200
+                withdrawn: 800
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display USDT reinvestment graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 updates/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a profit analytics dashboard in Wails? Examples of Recharts.
+    - id: FE5
+      title: Profit Distribution Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to profit distribution (e.g., payout processed, rule updated).
+      functionality:
+        - Toast notifications: Payout processed, rule saved
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: profit
+            message: Payout of $40 processed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for payout
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for profit distribution in Wails? Examples of toast animations.
+    - id: BE1
+      title: Payout Processing Service
+      priority: High
+      hours: 80
+      description: Backend for processing profit payouts via Stripe and Cosmos with Bybit balance checks.
+      functionality:
+        - Payouts: Stripe for fiat ($40 min), Cosmos for crypto
+        - Balance check: Bybit API proxy
+        - Notification: Trigger WebSocket on payout
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/payout
+        request:
+          method: POST
+          path: /api/profit/payout
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            amount: 40
+            asset: USDT
+            method: stripe
+        response:
+          status: 200
+          body:
+            payoutId: 123
+            status: processed
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Process $40 USDT payout
+          - Send WebSocket notification
+        full:
+          - 1,000 payouts/min, Stripe/Cosmos
+          - ELK logs
+        error:
+          - Insufficient balance: 400 error, ELK log
+          - Payment failure: 500 error, ELK log
+      prompt: How to process payouts with Stripe and Cosmos? Examples of Bybit balance checks.
+    - id: BE2
+      title: Profit Distribution Automation
+      priority: Medium
+      hours: 60
+      description: Backend for automating profit distribution based on user rules (e.g., 20% reinvestment).
+      functionality:
+        - Triggers: Scheduled (cron) or threshold-based
+        - Execution: Apply rules to balances
+        - Notification: Trigger WebSocket on distribution
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/trigger
+        request:
+          method: POST
+          path: /api/profit/trigger
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            ruleId: 123
+            amount: 200
+        response:
+          status: 200
+          body:
+            distributionId: 456
+            status: completed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Distribute $200 based on rule
+          - Send WebSocket notification
+        full:
+          - 1,000 distributions/min, 5 rules
+          - ELK logs
+        error:
+          - Invalid rule: 400 error, ELK log
+          - Execution failure: 500 error, ELK log
+      prompt: How to automate profit distribution with cron jobs? Examples of rule triggers.
+    - id: BE3
+      title: Profit Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for analyzing profit distribution with InfluxDB and Matomo.
+      functionality:
+        - Metrics: Reinvested vs. withdrawn amounts
+        - Storage: InfluxDB for time-series
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/analytics
+        request:
+          method: GET
+          path: /api/profit/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                reinvested: 200
+                withdrawn: 800
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 10 payouts in InfluxDB
+          - Matomo active
+        full:
+          - 1,000 records/min, 5 metrics
+          - WebSocket notification
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to analyze profit distribution with InfluxDB and Matomo? Examples of time-series APIs.
+    - id: BE4
+      title: Profit Security Service
+      priority: High
+      hours: 60
+      description: Backend for securing profit payouts with NFC/2FA validation.
+      functionality:
+        - Validation: NFC (Vault), 2FA (TOTP)
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/confirm
+        request:
+          method: POST
+          path: /api/profit/confirm
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            payoutId: 123
+            2faCode: 123456
+            nfcToken: abc123
+        response:
+          status: 200
+          body:
+            status: confirmed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Confirm payout with 2FA
+        full:
+          - 1,000 confirmations/min, NFC support
+          - ELK logs
+        error:
+          - Invalid 2FA: 403 error, ELK log
+          - NFC failure: 400 error, ELK log
+      prompt: How to secure payouts with NFC and 2FA? Examples of Vault integration.
+    - id: BE5
+      title: Payout Queue Service
+      priority: Medium
+      hours: 60
+      description: Backend for queuing payout requests with RabbitMQ.
+      functionality:
+        - Queue: RabbitMQ for async processing
+        - Retries: Failed payouts
+        - Notification: Trigger WebSocket on queue status
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/queue
+        request:
+          method: POST
+          path: /api/profit/queue
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            payoutId: 123
+        response:
+          status: 200
+          body:
+            queueId: 789
+            status: queued
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Queue $40 payout
+          - Send WebSocket notification
+        full:
+          - 1,000 payouts/min, retry mechanism
+          - ELK logs
+        error:
+          - Queue failure: 500 error, ELK log
+          - Overflow: CloudWatch alert
+      prompt: How to set up RabbitMQ for payout queuing? Examples of retry mechanisms.
+    - id: BE6
+      title: Profit Management Testing
+      priority: Medium
+      hours: 60
+      description: Testing for payout processing, automation, analytics, and security services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test profit management services with Locust? Examples of test cases.
+    - id: BE7
+      title: Profit Balance Proxy Service
+      priority: Medium
+      hours: 60
+      description: Serverless proxy for checking Bybit balances for profit distribution.
+      functionality:
+        - Proxy to Bybit /v5/account/info
+        - Caching: Redis (TTL 5 min)
+        - Notification: Trigger WebSocket on balance update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profit/proxy
+        request:
+          method: GET
+          path: /api/profit/proxy?userId=u123&exchange=bybit
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body: {}
+        response:
+          status: 200
+          body:
+            balance:
+              USDT: 1000
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Fetch USDT balance
+          - Send WebSocket notification
+        full:
+          - 1,000 requests/min, cache active
+          - ELK logs
+        error:
+          - Invalid key: 403 error, ELK log
+          - API failure: 500 error, ELK log
+      prompt: How to proxy Bybit balance checks for profit management? Examples of Redis caching.
+services:
+  - name: Payout Processing Service
+    description: Processes profit payouts via Stripe and Cosmos
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Redis
+      - RabbitMQ
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for profit distribution
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Payout Processing
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Profit Analytics
+      type: AWS EC2
+      specs:
+        instance: m5.large
+        cores: 2
+        ram: 8GB
+  storage: 12TB (S3, InfluxDB)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

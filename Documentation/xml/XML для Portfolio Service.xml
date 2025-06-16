@@ -1,0 +1,155 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserPortfolio id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <Portfolios>
+        <Portfolio type="short_term" id="p_short_001">
+            <Name>Speculative</Name>
+            <Description>High-risk, short-term trades</Description>
+            <CreatedAt>2025-06-01T12:00:00Z</CreatedAt>
+            <Assets>
+                <Asset>
+                    <Type>crypto</Type>
+                    <Symbol>SOL</Symbol>
+                    <Amount>10.5</Amount>
+                    <ValueUSD>2100.00</ValueUSD>
+                    <LastPriceUSD>200.00</LastPriceUSD>
+                    <ContractAddress>0x1111111111111111</ContractAddress>
+                    <Source>uniswap</Source>
+                    <Network>polygon</Network>
+                    <WalletAddress>0x1234567890abcdef</WalletAddress>
+                    <AcquisitionDate>2025-06-05T10:30:00Z</AcquisitionDate>
+                </Asset>
+                <Asset>
+                    <Type>nft</Type>
+                    <Symbol>BoredApe#1234</Symbol>
+                    <TokenID>1234</TokenID>
+                    <Amount>1</Amount>
+                    <ValueUSD>500.00</ValueUSD>
+                    <ContractAddress>0x2222222222222222</ContractAddress>
+                    <Source>opensea</Source>
+                    <Network>ethereum</Network>
+                    <WalletAddress>0x1234567890abcdef</WalletAddress>
+                    <AcquisitionDate>2025-06-06T12:00:00Z</AcquisitionDate>
+                </Asset>
+                <Asset>
+                    <Type>rva</Type>
+                    <Symbol>VIX#789</Symbol>
+                    <Amount>100</Amount>
+                    <ValueUSD>200.00</ValueUSD>
+                    <Source>bybit</Source>
+                    <Network>none</Network>
+                    <AcquisitionDate>2025-06-07T14:00:00Z</AcquisitionDate>
+                </Asset>
+            </Assets>
+            <TotalValueUSD>2800.00</TotalValueUSD>
+            <ReturnPercentage>1.2</ReturnPercentage>
+            <RiskMetrics>
+                <Volatility>15.5</Volatility>
+                <MaxDrawdown>5.0</MaxDrawdown>
+                <ValueAtRisk>3.5</ValueAtRisk>
+                <SharpeRatio>1.2</SharpeRatio>
+                <CalculationDate>2025-06-11T22:00:00Z</CalculationDate>
+                <History>
+                    <MetricSnapshot timestamp="2025-06-10T22:00:00Z">
+                        <Volatility>15.0</Volatility>
+                        <MaxDrawdown>4.8</MaxDrawdown>
+                        <ValueAtRisk>3.4</ValueAtRisk>
+                        <SharpeRatio>1.1</SharpeRatio>
+                    </MetricSnapshot>
+                </History>
+            </RiskMetrics>
+            <PerformanceMetrics>
+                <AnnualizedReturn>18.5</AnnualizedReturn>
+                <Beta>1.1</Beta>
+                <Alpha>0.03</Alpha>
+            </PerformanceMetrics>
+        </Portfolio>
+        <Portfolio type="mid_term" id="p_mid_001">
+            <Name>Balanced</Name>
+            <Description>Moderate risk, mid-term investments</Description>
+            <CreatedAt>2025-06-01T12:00:00Z</CreatedAt>
+            <Assets>
+                <Asset>
+                    <Type>crypto</Type>
+                    <Symbol>ETH</Symbol>
+                    <Amount>0.8</Amount>
+                    <ValueUSD>2000.00</ValueUSD>
+                    <LastPriceUSD>2500.00</LastPriceUSD>
+                    <ContractAddress>0x3333333333333333</ContractAddress>
+                    <Source>bybit</Source>
+                    <Network>none</Network>
+                    <AcquisitionDate>2025-06-04T09:00:00Z</AcquisitionDate>
+                </Asset>
+                <Asset>
+                    <Type>bond</Type>
+                    <Symbol>TokenizedBond#456</Symbol>
+                    <Amount>1000</Amount>
+                    <ValueUSD>1000.00</ValueUSD>
+                    <ContractAddress>0x4444444444444444</ContractAddress>
+                    <Source>aave</Source>
+                    <Network>polygon</Network>
+                    <WalletAddress>0x1234567890abcdef</WalletAddress>
+                    <AcquisitionDate>2025-06-04T10:00:00Z</AcquisitionDate>
+                </Asset>
+            </Assets>
+            <TotalValueUSD>3000.00</TotalValueUSD>
+            <ReturnPercentage>0.8</ReturnPercentage>
+            <RiskMetrics>
+                <Volatility>10.0</Volatility>
+                <MaxDrawdown>3.0</MaxDrawdown>
+                <ValueAtRisk>2.0</ValueAtRisk>
+                <SharpeRatio>0.9</SharpeRatio>
+                <CalculationDate>2025-06-11T22:00:00Z</CalculationDate>
+            </RiskMetrics>
+            <PerformanceMetrics>
+                <AnnualizedReturn>10.0</AnnualizedReturn>
+                <Beta>0.8</Beta>
+                <Alpha>0.02</Alpha>
+            </PerformanceMetrics>
+        </Portfolio>
+        <Portfolio type="long_term" id="p_long_001">
+            <Name>Retirement</Name>
+            <Description>Low-risk, long-term investments</Description>
+            <CreatedAt>2025-06-01T12:00:00Z</CreatedAt>
+            <Assets>
+                <Asset>
+                    <Type>crypto</Type>
+                    <Symbol>BTC</Symbol>
+                    <Amount>0.1</Amount>
+                    <ValueUSD>3000.00</ValueUSD>
+                    <LastPriceUSD>30000.00</LastPriceUSD>
+                    <Source>bybit</Source>
+                    <Network>none</Network>
+                    <AcquisitionDate>2025-06-03T08:00:00Z</AcquisitionDate>
+                </Asset>
+                <Asset>
+                    <Type>stablecoin</Type>
+                    <Symbol>USDT</Symbol>
+                    <Amount>1000</Amount>
+                    <ValueUSD>1000.00</ValueUSD>
+                    <ContractAddress>0x5555555555555555</ContractAddress>
+                    <Source>okx</Source>
+                    <Network>none</Network>
+                    <AcquisitionDate>2025-06-03T09:00:00Z</AcquisitionDate>
+                </Asset>
+            </Assets>
+            <TotalValueUSD>4000.00</TotalValueUSD>
+            <ReturnPercentage>0.5</ReturnPercentage>
+            <RiskMetrics>
+                <Volatility>8.0</Volatility>
+                <MaxDrawdown>2.0</MaxDrawdown>
+                <ValueAtRisk>1.5</ValueAtRisk>
+                <SharpeRatio>0.7</SharpeRatio>
+                <CalculationDate>2025-06-11T22:00:00Z</CalculationDate>
+            </RiskMetrics>
+            <PerformanceMetrics>
+                <AnnualizedReturn>6.0</AnnualizedReturn>
+                <Beta>0.5</Beta>
+                <Alpha>0.01</Alpha>
+            </PerformanceMetrics>
+        </Portfolio>
+    </Portfolios>
+</UserPortfolio>
+```
+
+**Пояснение**: Этот сервис хранит данные о портфелях (краткосрочный, среднесрочный, долгосрочный), включая активы, их балансы, риск-метрики (волатильность, VaR, Sharpe Ratio) и производительность (Annualized Return, Beta, Alpha).

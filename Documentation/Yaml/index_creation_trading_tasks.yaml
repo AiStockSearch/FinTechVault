@@ -1,0 +1,550 @@
+epic:
+  id: ade13838-ec63-41fb-b95b-30565b497f1e
+  title: Index Creation and Trading
+  priority: Medium
+  duration_weeks: 10
+  dependencies:
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - a58fc8fb-7839-4ace-9449-ad06a58391ed # DeFi Limit Orders
+    - 46bf3715-2434-4cef-9bfe-f6214afe56c0 # Portfolio Monitoring
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+  tasks:
+    - id: FE1
+      title: Index Creation UI
+      priority: High
+      hours: 80
+      description: Develop a UI for creating custom indices (e.g., BTC/ETH portfolio) with asset weights and rebalancing options.
+      functionality:
+        - Form: Asset selection, weight allocation (e.g., 60% BTC, 40% ETH)
+        - Validation: Total weight = 100%
+        - Preview: Simulated index performance
+        - Notification: Toast on index creation
+      api:
+        endpoint: /api/index/create
+        request:
+          method: POST
+          path: /api/index/create
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            name: My Crypto Index
+            assets:
+              - symbol: BTC
+                weight: 0.6
+              - symbol: ETH
+                weight: 0.4
+            rebalanceFrequency: monthly
+        response:
+          status: 200
+          body:
+            indexId: 123
+            status: created
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Create BTC/ETH index with 60/40 weights
+          - Toast notification on success
+        full:
+          - Support 10 assets, 1,000 indices/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid weights: Show "Weights Must Total 100%"
+          - API error: Show "Index Creation Failed"
+      prompt: How to create an index creation UI in React Native? Examples of asset weight validation.
+    - id: FE2
+      title: Index Trading UI
+      priority: High
+      hours: 80
+      description: UI for trading custom indices on Bybit (CEX) and Uniswap (DeFi) with client-side API calls.
+      functionality:
+        - Trade form: Buy/sell index, amount
+        - Integration: Bybit API for CEX, Web3.js for Uniswap
+        - Order confirmation: Modal dialog
+        - Notification: Toast on trade execution
+      api:
+        endpoint: /api/index/trade
+        request:
+          method: POST
+          path: /api/index/trade
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            indexId: 123
+            action: buy
+            amount: 1000
+            platform: bybit
+        response:
+          status: 200
+          body:
+            tradeId: 456
+            status: executed
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Execute $1000 buy trade on Bybit
+          - Toast notification on success
+        full:
+          - Support Bybit/Uniswap, 1,000 trades/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid amount: Show "Invalid Amount"
+          - API error: Show "Trade Failed"
+      prompt: How to implement an index trading UI with Bybit API and Web3.js in Wails? Examples of trade forms.
+    - id: FE3
+      title: Index Rebalancing UI
+      priority: Medium
+      hours: 60
+      description: UI for configuring and triggering index rebalancing (e.g., monthly adjustments).
+      functionality:
+        - Form: Rebalance frequency (daily, weekly, monthly)
+        - Manual rebalance button
+        - Animation: Progress bar for rebalancing
+        - Notification: Toast on rebalance completion
+      api:
+        endpoint: /api/index/rebalance
+        request:
+          method: POST
+          path: /api/index/rebalance
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            indexId: 123
+            frequency: monthly
+        response:
+          status: 200
+          body:
+            rebalanceId: 789
+            status: completed
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Set monthly rebalance for index
+          - Toast notification on completion
+        full:
+          - Support 3 frequencies, 1,000 rebalances/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid frequency: Show "Invalid Frequency"
+          - API error: Show "Rebalance Failed"
+      prompt: How to create a rebalancing UI in React Native? Examples of progress animations.
+    - id: FE4
+      title: Index Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for index performance analytics with graphs and export options.
+      functionality:
+        - Graphs: Index value, Sharpe Ratio (Recharts)
+        - Filters: Date, asset
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/index/analytics
+        request:
+          method: GET
+          path: /api/index/analytics?indexId=123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                value: 1100
+                sharpeRatio: 1.2
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display index value graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 updates/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create an index analytics dashboard in Wails? Examples of Recharts.
+    - id: FE5
+      title: API Keys UI for Index Trading
+      priority: Medium
+      hours: 60
+      description: UI for inputting and managing API keys for Bybit index trading.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /v5/account/info)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on validation success
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key, display balance
+          - Toast notification on success
+        full:
+          - Support 1 exchange, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: How to create an API key input UI in React Native for index trading? Examples of AES-256 encryption.
+    - id: FE6
+      title: Index Trading Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to index trading (e.g., trade executed, rebalance completed).
+      functionality:
+        - Toast notifications: Trade execution, rebalance completion
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: index
+            message: Trade 456 executed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for trade execution
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for index trading in Wails? Examples of toast animations.
+    - id: BE1
+      title: Index Trading Service (CEX)
+      priority: High
+      hours: 80
+      description: Backend proxy for trading indices on Bybit with client-side API key integration.
+      functionality:
+        - Proxy to Bybit /v5/order/create for trade execution
+        - Validation: Available balance, order parameters
+        - Notification: Trigger WebSocket on trade
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/index/trade
+        request:
+          method: POST
+          path: /api/index/trade
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            userId: u123
+            indexId: 123
+            action: buy
+            amount: 1000
+            platform: bybit
+        response:
+          status: 200
+          body:
+            tradeId: 456
+            status: executed
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Execute $1000 buy trade
+          - Send WebSocket notification
+        full:
+          - 1,000 trades/min, 5 assets
+          - ELK logs
+        error:
+          - Invalid key: 403 error, ELK log
+          - Insufficient balance: 400 error, ELK log
+      prompt: How to create a Bybit trading proxy for indices? Examples of order validation.
+    - id: BE2
+      title: Index Trading Service (DeFi)
+      priority: Medium
+      hours: 80
+      description: Backend for trading indices on Uniswap using Web3.js and smart contracts.
+      functionality:
+        - Smart contract: Execute trades on Uniswap V3
+        - Validation: Token approvals, liquidity
+        - Notification: Trigger WebSocket on trade
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/index/trade
+        request:
+          method: POST
+          path: /api/index/trade
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            indexId: 123
+            action: buy
+            amount: 1000
+            platform: uniswap
+        response:
+          status: 200
+          body:
+            tradeId: 789
+            status: executed
+            txHash: 0x123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Execute $1000 buy trade on Uniswap
+          - Send WebSocket notification
+        full:
+          - 1,000 trades/min, 5 assets
+          - ELK logs
+        error:
+          - Insufficient liquidity: 400 error, ELK log
+          - Smart contract failure: 500 error, ELK log
+      prompt: How to trade indices on Uniswap with Web3.js? Examples of smart contract integration.
+    - id: BE3
+      title: Index Rebalancing Service
+      priority: Medium
+      hours: 60
+      description: Backend for automatic and manual rebalancing of indices with WebSocket updates.
+      functionality:
+        - Rebalance: Adjust asset weights (e.g., 60/40 BTC/ETH)
+        - Schedule: Daily, weekly, monthly (cron job)
+        - Notification: Trigger WebSocket on rebalance
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/index/rebalance
+        request:
+          method: POST
+          path: /api/index/rebalance
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            indexId: 123
+            frequency: monthly
+        response:
+          status: 200
+          body:
+            rebalanceId: 789
+            status: completed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Rebalance BTC/ETH index
+          - Send WebSocket notification
+        full:
+          - 1,000 rebalances/min, 3 frequencies
+          - ELK logs
+        error:
+          - Invalid frequency: 400 error, ELK log
+          - Rebalance failure: 500 error, ELK log
+      prompt: How to implement index rebalancing with cron jobs? Examples of WebSocket updates.
+    - id: BE4
+      title: Index Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for calculating index performance metrics with Julia and Matomo integration.
+      functionality:
+        - Metrics: Index value, Sharpe Ratio, volatility
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/index/analytics
+        request:
+          method: GET
+          path: /api/index/analytics?indexId=123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                value: 1100
+                sharpeRatio: 1.2
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Calculate Sharpe Ratio for index
+          - Matomo tracks analytics
+        full:
+          - 1,000 calculations/min, 5 metrics
+          - WebSocket notification
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to calculate index metrics with Julia and Matomo? Examples of analytics APIs.
+    - id: BE5
+      title: Index Data Cache Service
+      priority: Low
+      hours: 60
+      description: Cache index data with Redis to reduce API calls.
+      functionality:
+        - Caching: Redis (TTL 5 min)
+        - Invalidation: On index update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/index/cache
+        request:
+          method: GET
+          path: /api/index/cache?indexId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              value: 1100
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cache index data
+          - Access in < 20ms
+        full:
+          - 1,000 requests/min, cache invalidation
+          - ELK logs
+        error:
+          - Cache miss: 404 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: How to cache index data with Redis? Examples of cache invalidation.
+    - id: BE6
+      title: Index Smart Contract Audit
+      priority: High
+      hours: 60
+      description: Audit DeFi index trading smart contracts with OpenZeppelin.
+      functionality:
+        - Security checks: Reentrancy, overflow
+        - Bug fixes
+        - Logging: ELK Stack
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% audit coverage
+        full:
+          - 100% audit, vulnerabilities fixed
+          - ELK logs
+        error:
+          - Vulnerability found: Jira ticket
+          - Audit failure: ELK log
+      prompt: How to audit DeFi smart contracts with OpenZeppelin? Examples of security checks.
+    - id: BE7
+      title: Index Trading Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast index trading notifications via WebSocket.
+      functionality:
+        - Triggers: Trade execution, rebalance completion
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: index
+            message: Trade 456 executed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast trade notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for index trading? Examples of Redis queuing.
+services:
+  - name: Index Trading Proxy
+    description: Serverless proxy for index trading on Bybit
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for index trading
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Index Trading Proxy
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Index Analytics
+      type: AWS EC2
+      specs:
+        instance: m5.large
+        cores: 2
+        ram: 8GB
+  storage: 12TB (S3)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

@@ -1,0 +1,65 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserTransactions id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <Transactions>
+        <Transaction id="tx001">
+            <Type>buy</Type>
+            <Asset>
+                <Symbol>SOL</Symbol>
+                <ContractAddress>0x1111111111111111</ContractAddress>
+                <Amount>5</Amount>
+            </Asset>
+            <PriceUSD>200.00</PriceUSD>
+            <TotalUSD>1000.00</TotalUSD>
+            <Source>uniswap</Source>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <ExecutedAt>2025-06-05T10:30:00Z</ExecutedAt>
+            <Status>completed</Status>
+            <NFCToken>encrypted:ZmRzZGZmZGZkZGYzZg==</NFCToken>
+            <DeFiProtocol>uniswap</DeFiProtocol>
+            <GasUsed>180000</GasUsed>
+            <GasPriceGwei>30</GasPriceGwei>
+            <TransactionHash>0x1234567890abcdef1234567890abcdef</TransactionHash>
+            <FeeUSD>0.90</FeeUSD>
+        </Transaction>
+        <Transaction id="tx002">
+            <Type>sell</Type>
+            <Asset>
+                <Symbol>SOL</Symbol>
+                <ContractAddress>0x1111111111111111</ContractAddress>
+                <Amount>5</Amount>
+            </Asset>
+            <PriceUSD>240.00</PriceUSD>
+            <TotalUSD>1200.00</TotalUSD>
+            <Source>bybit</Source>
+            <Network>none</Network>
+            <WalletAddress>none</WalletAddress>
+            <ExecutedAt>2025-06-10T14:00:00Z</ExecutedAt>
+            <Status>completed</Status>
+            <APIKeyID>api001</APIKeyID>
+            <FeeUSD>2.40</FeeUSD>
+        </Transaction>
+        <Transaction id="tx003">
+            <Type>lend</Type>
+            <Asset>
+                <Symbol>USDT</Symbol>
+                <ContractAddress>0x5555555555555555</ContractAddress>
+                <Amount>500</Amount>
+            </Asset>
+            <Source>aave</Source>
+            <Network>polygon</Network>
+            <WalletAddress>0x1234567890abcdef</WalletAddress>
+            <ExecutedAt>2025-06-10T15:00:00Z</ExecutedAt>
+            <Status>active</Status>
+            <DeFiProtocol>aave</DeFiProtocol>
+            <GasUsed>200000</GasUsed>
+            <GasPriceGwei>25</GasPriceGwei>
+            <TransactionHash>0xabcdef1234567890abcdef1234567890</TransactionHash>
+            <FeeUSD>0.50</FeeUSD>
+        </Transaction>
+    </Transactions>
+</UserTransactions>
+```
+
+**Пояснение**: Этот сервис хранит историю транзакций (покупки, продажи, лендинг) на CEX (Bybit, OKX) и DeFi (Uniswap, Aave), с параметрами (газ, хеш, API-ключи).

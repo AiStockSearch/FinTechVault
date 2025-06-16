@@ -1,0 +1,77 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserProfitDistribution id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <ProfitDistribution>
+        <Enabled>true</Enabled>
+        <Rules>
+            <Rule>
+                <Destination>withdrawal</Destination>
+                <Percentage>20</Percentage>
+                <Target>bank_account</Target>
+                <AccountDetails>encrypted:YmFua19hY2NvdW50XzEyMw==</AccountDetails>
+                <Currency>USD</Currency>
+                <BankDetails>
+                    <BankName>encrypted:Example Bank</BankName>
+                    <SWIFT>EXABUS33</SWIFT>
+                    <IBAN>encrypted:US1234567890</IBAN>
+                </BankDetails>
+            </Rule>
+            <Rule>
+                <Destination>insurance</Destination>
+                <Percentage>20</Percentage>
+                <Target>stablecoin</Target>
+                <Asset>USDT</Asset>
+                <ContractAddress>0x5555555555555555</ContractAddress>
+                <WalletAddress>0x1234567890abcdef</WalletAddress>
+                <Network>polygon</Network>
+            </Rule>
+            <Rule>
+                <Destination>long_term</Destination>
+                <Percentage>20</Percentage>
+                <Target>portfolio</Target>
+                <PortfolioID>p_long_001</PortfolioID>
+            </Rule>
+            <Rule>
+                <Destination>mid_term</Destination>
+                <Percentage>20</Percentage>
+                <Target>portfolio</Target>
+                <PortfolioID>p_mid_001</PortfolioID>
+            </Rule>
+            <Rule>
+                <Destination>cashflow</Destination>
+                <Percentage>20</Percentage>
+                <Target>portfolio</Target>
+                <PortfolioID>p_short_001</PortfolioID>
+            </Rule>
+        </Rules>
+        <LastDistribution>
+            <AmountUSD>200.00</AmountUSD>
+            <DistributedAt>2025-06-10T14:30:00Z</DistributedAt>
+            <Details>
+                <Allocation destination="withdrawal" amountUSD="40.00" transactionID="tx_dist001"/>
+                <Allocation destination="insurance" amountUSD="40.00" transactionID="tx_dist002"/>
+                <Allocation destination="long_term" amountUSD="40.00" portfolioID="p_long_001"/>
+                <Allocation destination="mid_term" amountUSD="40.00" portfolioID="p_mid_001"/>
+                <Allocation destination="cashflow" amountUSD="40.00" portfolioID="p_short_001"/>
+            </Details>
+        </LastDistribution>
+        <DistributionHistory>
+            <Distribution id="dist001" amountUSD="200.00" distributedAt="2025-06-10T14:30:00Z"/>
+            <Distribution id="dist002" amountUSD="150.00" distributedAt="2025-06-05T12:00:00Z"/>
+        </DistributionHistory>
+        <TaxSettings>
+            <Enabled>true</Enabled>
+            <TaxJurisdiction>US</TaxJurisdiction>
+            <TaxReporting>
+                <Enabled>true</Enabled>
+                <LastReported>2025-06-01T00:00:00Z</LastReported>
+                <TaxableEvents>
+                    <Event id="tax001" type="capital_gain" amountUSD="200.00" date="2025-06-10T14:00:00Z" transactionID="tx002"/>
+                </TaxableEvents>
+            </TaxReporting>
+        </TaxSettings>
+    </ProfitDistribution>
+</UserProfitDistribution>
+```
+
+**Пояснение**: Этот сервис хранит настройки распределения прибыли (20% на вывод, страховку, портфели), историю распределений, налоговую отчётность.

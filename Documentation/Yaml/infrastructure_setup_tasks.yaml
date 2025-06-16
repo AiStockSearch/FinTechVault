@@ -1,0 +1,502 @@
+epic:
+  id: 844b680c-1095-4a51-aa8f-799ac92e78f1
+  title: Infrastructure Setup
+  priority: Critical
+  duration_weeks: 14
+  dependencies: []
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Infrastructure Monitoring UI
+      priority: High
+      hours: 80
+      description: Develop a UI for monitoring infrastructure metrics (e.g., server uptime, resource usage).
+      functionality:
+        - Dashboard: CPU, memory, disk usage graphs (Recharts)
+        - Filters: Server, time period
+        - Alerts: Display CloudWatch alerts
+        - Notification: Toast on alert trigger
+      api:
+        endpoint: /api/infra/monitor
+        request:
+          method: GET
+          path: /api/infra/monitor?server=api&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            metrics:
+              - date: 2025-06-01T12:00:00Z
+                cpu: 0.7
+                memory: 0.8
+                disk: 0.6
+            alerts:
+              - id: 123
+                message: High CPU usage
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display CPU usage graph for API server
+          - Toast notification on alert
+        full:
+          - 5 metrics, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Metrics"
+          - API error: Show "Metrics Fetch Failed"
+      prompt: How to create an infrastructure monitoring UI in React Native with Recharts? Examples of metric graphs.
+    - id: FE2
+      title: CI/CD Pipeline UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing and managing CI/CD pipelines (e.g., build status, deployments).
+      functionality:
+        - Table: Pipeline name, status, last run
+        - Actions: Trigger build, view logs
+        - Notification: Toast on pipeline status change
+        - Animation: Status update transition
+      api:
+        endpoint: /api/cicd/pipelines
+        request:
+          method: GET
+          path: /api/cicd/pipelines?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            pipelines:
+              - name: frontend
+                status: success
+                lastRun: 2025-06-01T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display frontend pipeline status
+          - Toast notification on status change
+        full:
+          - Support 1,000 pipeline updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No pipelines: Show "No Pipelines"
+          - API error: Show "Pipeline Fetch Failed"
+      prompt: How to create a CI/CD pipeline UI in Wails? Examples of status tables.
+    - id: FE3
+      title: Web3 Node Status UI
+      priority: Medium
+      hours: 60
+      description: UI for monitoring Web3 node status (e.g., Polygon, Cosmos).
+      functionality:
+        - Table: Node, chain, block height, status
+        - Refresh button: Update node status
+        - Animation: Status loading spinner
+        - Notification: Toast on node status update
+      api:
+        endpoint: /api/web3/status
+        request:
+          method: GET
+          path: /api/web3/status?chain=polygon
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            nodes:
+              - chain: polygon
+                blockHeight: 123456
+                status: active
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display Polygon node status
+          - Toast notification on update
+        full:
+          - Support 2 chains, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No nodes: Show "No Nodes"
+          - API error: Show "Node Status Fetch Failed"
+      prompt: How to create a Web3 node status UI in React Native? Examples of status tables.
+    - id: FE4
+      title: Infrastructure Alerts UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing and managing infrastructure alerts from CloudWatch.
+      functionality:
+        - List: Alert message, severity, timestamp
+        - Actions: Acknowledge, dismiss
+        - Notification: Toast on new alert
+        - Animation: Alert list transition
+      api:
+        endpoint: /api/infra/alerts
+        request:
+          method: GET
+          path: /api/infra/alerts?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            alerts:
+              - id: 123
+                message: High CPU usage
+                severity: high
+                timestamp: 2025-06-01T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display high CPU alert
+          - Toast notification on new alert
+        full:
+          - Support 1,000 alerts/min, 3 actions
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No alerts: Show "No Alerts"
+          - API error: Show "Alert Fetch Failed"
+      prompt: How to create an infrastructure alerts UI in Wails? Examples of alert lists.
+    - id: FE5
+      title: Infrastructure Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to infrastructure events (e.g., server down, pipeline failed).
+      functionality:
+        - Toast notifications: Server status, pipeline update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: infra
+            message: API server down
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for server down
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for infrastructure events in Wails? Examples of toast animations.
+    - id: BE1
+      title: AWS Infrastructure Deployment Service
+      priority: Critical
+      hours: 100
+      description: Backend for deploying AWS infrastructure (EKS, EC2, RDS, S3).
+      functionality:
+        - Deployment: EKS for Kubernetes, EC2 (m5.2xlarge), RDS (PostgreSQL), S3
+        - Configuration: Autoscaling, load balancing
+        - Notification: Trigger WebSocket on deployment
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/infra/deploy
+        request:
+          method: POST
+          path: /api/infra/deploy
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            components:
+              - type: eks
+                specs: { nodes: 3 }
+              - type: ec2
+                specs: { instance: m5.2xlarge }
+        response:
+          status: 200
+          body:
+            deploymentId: 123
+            status: deployed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Deploy EKS with 3 nodes
+          - Send WebSocket notification
+        full:
+          - 15 servers, autoscaling, 99% uptime
+          - ELK logs
+        error:
+          - Deployment failure: 500 error, ELK log
+          - Invalid specs: 400 error, ELK log
+      prompt: How to deploy AWS infrastructure with EKS and EC2? Examples of Terraform configurations.
+    - id: BE2
+      title: Web3 Node Deployment Service
+      priority: High
+      hours: 80
+      description: Backend for deploying and managing Web3 nodes (Polygon, Cosmos).
+      functionality:
+        - Deployment: Polygon, Cosmos nodes on EC2
+        - Integration: Chainlink for oracles
+        - Notification: Trigger WebSocket on node status
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/web3/deploy
+        request:
+          method: POST
+          path: /api/web3/deploy
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            chain: polygon
+            specs: { instance: m5.xlarge }
+        response:
+          status: 200
+          body:
+            nodeId: 456
+            status: deployed
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Deploy Polygon node
+          - Send WebSocket notification
+        full:
+          - 3 chains, 1,000 tx/min, Chainlink integration
+          - ELK logs
+        error:
+          - Node failure: 500 error, ELK log
+          - Invalid chain: 400 error, ELK log
+      prompt: How to deploy Polygon and Cosmos nodes on AWS? Examples of Chainlink integration.
+    - id: BE3
+      title: CI/CD Pipeline Service
+      priority: Medium
+      hours: 60
+      description: Backend for managing CI/CD pipelines using GitHub Actions.
+      functionality:
+        - Pipelines: Build, test, deploy (frontend, backend)
+        - Integration: Slack notifications
+        - Notification: Trigger WebSocket on pipeline status
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/cicd/pipelines
+        request:
+          method: POST
+          path: /api/cicd/pipelines
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            pipeline: frontend
+            action: trigger
+        response:
+          status: 200
+          body:
+            pipelineId: 789
+            status: running
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Trigger frontend pipeline
+          - Send WebSocket notification
+        full:
+          - 1,000 pipeline runs/min, Slack integration
+          - ELK logs
+        error:
+          - Pipeline failure: 500 error, ELK log
+          - Invalid pipeline: 400 error, ELK log
+      prompt: How to manage CI/CD pipelines with GitHub Actions? Examples of Slack integration.
+    - id: BE4
+      title: Monitoring and Logging Service
+      priority: High
+      hours: 80
+      description: Backend for collecting and analyzing infrastructure metrics and logs.
+      functionality:
+        - Metrics: Prometheus for server metrics
+        - Logging: ELK Stack for logs
+        - Dashboards: Grafana for visualization
+        - Notification: Trigger WebSocket on alert
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/infra/monitor
+        request:
+          method: GET
+          path: /api/infra/monitor?server=api
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            metrics:
+              - date: 2025-06-01T12:00:00Z
+                cpu: 0.7
+                memory: 0.8
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Collect CPU metrics for API server
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 dashboards
+          - ELK logs
+        error:
+          - Metrics failure: 500 error, ELK log
+          - Grafana outage: CloudWatch alert
+      prompt: How to set up Prometheus and ELK Stack for infrastructure monitoring? Examples of Grafana dashboards.
+    - id: BE5
+      title: Backup and Recovery Service
+      priority: Medium
+      hours: 60
+      description: Backend for managing backups and recovery for databases and storage.
+      functionality:
+        - Backups: PostgreSQL, InfluxDB to S3
+        - Schedule: Full (60 days), incremental (4h, 14 days)
+        - Recovery: Test monthly
+        - Notification: Trigger WebSocket on backup
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/infra/backup
+        request:
+          method: POST
+          path: /api/infra/backup
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            component: postgresql
+        response:
+          status: 200
+          body:
+            backupId: 123
+            status: completed
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Backup PostgreSQL to S3
+          - Send WebSocket notification
+        full:
+          - 10TB storage, 100% recovery rate
+          - ELK logs
+        error:
+          - Backup failure: 500 error, ELK log
+          - S3 outage: CloudWatch alert
+      prompt: How to manage backups for PostgreSQL and InfluxDB on S3? Examples of backup schedules.
+    - id: BE6
+      title: Infrastructure Testing
+      priority: Medium
+      hours: 60
+      description: Testing for deployment, Web3 nodes, CI/CD, monitoring, and backup services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Chaos tests: Chaos Monkey for resilience
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test infrastructure services with Locust and Chaos Monkey? Examples of test cases.
+    - id: BE7
+      title: Infrastructure Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast infrastructure-related notifications via WebSocket.
+      functionality:
+        - Triggers: Server down, pipeline failed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: infra
+            message: API server down
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast server down notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for infrastructure events? Examples of Redis queuing.
+services:
+  - name: Infrastructure Deployment Service
+    description: Deploys and manages AWS infrastructure
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - EKS
+      - RDS
+      - S3
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for infrastructure events
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Infrastructure Deployment
+      type: AWS EC2
+      specs:
+        instance: m5.2xlarge
+        cores: 8
+        ram: 32GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Web3 Nodes
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, RDS, IPFS)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

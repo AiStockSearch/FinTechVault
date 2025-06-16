@@ -1,0 +1,13 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserUIInteractions id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <UIInteractions>
+        <Interaction id="ui001" type="dashboard_view" timestamp="2025-06-11T22:30:00Z" durationSeconds="120" device="desktop" userAgent="Chrome/125.0"/>
+        <Interaction id="ui002" type="watchlist_add" timestamp="2025-06-11T22:35:00Z" itemID="wl001" device="mobile" userAgent="Safari/18.0"/>
+        <Interaction id="ui003" type="article_publish" timestamp="2025-06-10T14:30:00Z" itemID="art001" device="desktop"/>
+        <Interaction id="ui004" type="wallet_view" timestamp="2025-06-11T22:40:00Z" itemID="w001" device="mobile"/>
+    </UIInteractions>
+</UserUIInteractions>
+```
+
+**Пояснение**: Этот сервис хранит историю взаимодействий с UI (просмотры, добавления, публикации), включая устройство, агент, длительность.

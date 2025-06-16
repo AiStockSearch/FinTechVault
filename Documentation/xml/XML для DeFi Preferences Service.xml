@@ -1,0 +1,51 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserDeFiPreferences id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <DeFiPreferences>
+        <PreferredProtocols>
+            <Protocol priority="1">
+                <Name>uniswap</Name>
+                <Version>v3</Version>
+                <SupportedNetworks>
+                    <Network>polygon</Network>
+                    <Network>ethereum</Network>
+                </SupportedNetworks>
+            </Protocol>
+            <Protocol priority="2">
+                <Name>sushiswap</Name>
+                <SupportedNetworks>
+                    <Network>polygon</Network>
+                </SupportedNetworks>
+            </Protocol>
+            <Protocol priority="3">
+                <Name>aave</Name>
+                <SupportedNetworks>
+                    <Network>polygon</Network>
+                    <Network>ethereum</Network>
+                </SupportedNetworks>
+            </Protocol>
+            <Protocol priority="4">
+                <Name>curve</Name>
+                <SupportedNetworks>
+                    <Network>polygon</Network>
+                    <Network>ethereum</Network>
+                </SupportedNetworks>
+            </Protocol>
+        </PreferredProtocols>
+        <GasSettings>
+            <MaxGasPriceGwei>50</MaxGasPriceGwei>
+            <PreferredGasLimit>300000</PreferredGasLimit>
+            <DynamicGasAdjustment>true</DynamicGasAdjustment>
+            <GasPriceSource>ethgasstation</GasPriceSource>
+            <GasOptimizationLevel>aggressive</GasOptimizationLevel>
+        </GasSettings>
+        <SlippageTolerance>0.5</SlippageTolerance>
+        <AutoRebalanceEnabled>true</AutoRebalanceEnabled>
+        <RebalanceFrequencyDays>7</RebalanceFrequencyDays>
+        <RiskTolerance>medium</RiskTolerance>
+        <MaxTransactionRetries>3</MaxTransactionRetries>
+    </DeFiPreferences>
+</UserDeFiPreferences>
+```
+
+**Пояснение**: Этот сервис хранит предпочтения DeFi-протоколов (Uniswap, Sushiswap, Aave, Curve), настройки газа, проскальзывания, автобалансировки.

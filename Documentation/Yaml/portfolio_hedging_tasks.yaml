@@ -1,0 +1,116 @@
+epic:
+  id: 90e2e3be-a6a5-4fca-a682-f77008a9a036
+  title: Portfolio Hedging
+  priority: Medium
+  duration_weeks: 10
+  dependencies: [b38123fb-2c78-4a70-a288-5e702c1ce60f, a58fc8fb-7839-4ace-9449-ad06a58391ed, 46bf3715-2434-4cef-9bfe-f6214afe56c0]
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+    - name: OKX API
+      url: https://www.okx.com/docs-v5/en/
+    - name: Bitfinex API
+      url: https://docs.bitfinex.com/docs/rest-auth
+  tasks:
+    # Frontend
+    - id: FE1
+      title: Hedging UI
+      priority: Medium
+      hours: 60
+      description: UI for configuring hedging strategies with client-side Bybit API calls.
+      functionality: [Strategy selection, Asset input, Notification]
+      api: {endpoint: /api/hedge/ui, request: {method: GET, path: /api/hedge/ui?strategy=delta-neutral}, response: {status: 200, body: {strategy: delta-neutral}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Configure BTC hedge], full: [1,000 configs/min], error: [Invalid strategy: Show error]}
+    - id: FE2
+      title: Hedging Graphs UI
+      priority: Low
+      hours: 60
+      description: Graphs for hedging performance using Recharts.
+      functionality: [VaR graph, Filters, Notification]
+      api: {endpoint: /api/hedge/graph, request: {method: GET, path: /api/hedge/graph?asset=BTC}, response: {status: 200, body: {data: [{date: 2025-06-01, var: 0.05}]}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [VaR graph], full: [5 metrics], error: [No data: Show error]}
+    - id: FE3
+      title: API Keys UI for Hedging
+      priority: Medium
+      hours: 60
+      description: UI for API key input for hedging CEX integrations.
+      functionality: [Key input, Validation, Notification]
+      api: {endpoint: /api/keys/validate, request: {method: POST, path: /api/keys/validate, body: {exchange: bybit}}, response: {status: 200, body: {status: valid}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Validate Bybit key], full: [1,000 validations/min], error: [Invalid key: Show error]}
+    - id: FE4
+      title: Hedging Triggers UI
+      priority: Medium
+      hours: 60
+      description: UI for configuring hedging triggers.
+      functionality: [Trigger settings, Notification]
+      api: {endpoint: /api/hedge/trigger/ui, request: {method: POST, path: /api/hedge/trigger/ui, body: {asset: BTC, threshold: 0.05}}, response: {status: 200, body: {triggerId: 123}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Set BTC trigger], full: [1,000 triggers/min], error: [Invalid threshold: Show error]}
+    - id: FE5
+      title: Hedging Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for hedging-related notifications via WebSocket.
+      functionality: [Toast notifications, History, Animation]
+      api: {endpoint: /ws/notifications, request: {method: WebSocket, path: ws://api.wealthproject.com/ws/notifications?userId=u123}, response: {status: 200, body: {type: hedge, message: Trigger executed}}}
+      deployment: Client
+      acceptance_criteria: {minimal: [Toast for trigger], full: [1,000 notifications/min], error: [Disconnect: Show error]}
+    # Backend
+    - id: BE1
+      title: DeFi Hedging Service
+      priority: Medium
+      hours: 80
+      description: Backend for DeFi hedging strategies using Aave.
+      functionality: [Smart contract calls, Validation, Notification]
+      api: {endpoint: /api/hedge/defi, request: {method: POST, path: /api/hedge/defi, body: {asset: BTC}}, response: {status: 200, body: {hedgeId: 123}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Hedge BTC], full: [1,000 hedges/min], error: [Invalid asset: 400 error]}
+    - id: BE2
+      title: CEX Hedging Proxy
+      priority: Medium
+      hours: 80
+      description: Proxy for CEX hedging with Bybit API.
+      functionality: [API proxy, Rate-limiting, Notification]
+      api: {endpoint: /api/hedge/cex, request: {method: POST, path: /api/hedge/cex, body: {asset: BTC}}, response: {status: 200, body: {hedgeId: 456}}}
+      deployment: Server (AWS Lambda)
+      acceptance_criteria: {minimal: [Hedge BTC], full: [1,000 hedges/min], error: [Invalid key: 403 error]}
+    - id: BE3
+      title: Hedging Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for hedging analytics with Julia.
+      functionality: [VaR calculation, Logging, Notification]
+      api: {endpoint: /api/hedge/analytics, request: {method: GET, path: /api/hedge/analytics?asset=BTC}, response: {status: 200, body: {data: [{var: 0.05}]}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Calculate VaR], full: [1,000 calculations/min], error: [No data: 404 error]}
+    - id: BE4
+      title: Hedging Automation Service
+      priority: Medium
+      hours: 60
+      description: Backend for automating hedging triggers with WebSocket.
+      functionality: [Trigger execution, Notification]
+      api: {endpoint: /api/hedge/trigger, request: {method: POST, path: /api/hedge/trigger, body: {asset: BTC}}, response: {status: 200, body: {triggerId: 123}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Execute trigger], full: [1,000 triggers/min], error: [Invalid trigger: 400 error]}
+    - id: BE5
+      title: Hedging Cache Service
+      priority: Low
+      hours: 60
+      description: Cache hedging data with Redis.
+      functionality: [Caching, Logging]
+      api: {endpoint: /api/hedge/cache, request: {method: GET, path: /api/hedge/cache?asset=BTC}, response: {status: 200, body: {data: {var: 0.05}}}}
+      deployment: Server (AWS EC2)
+      acceptance_criteria: {minimal: [Cache BTC data], full: [1,000 requests/min], error: [Cache miss: 404 error]}
+    - id: BE6
+      title: CEX Hedging Proxy Service
+      priority: Medium
+      hours: 60
+      description: Serverless proxy for CEX hedging APIs.
+      functionality: [Proxy, Rate-limiting, Notification]
+      api: {endpoint: /api/hedge/proxy, request: {method: POST, path: /api/hedge/proxy, body: {exchange: bybit}}, response: {status: 200, body: {hedgeId: 789}}}
+      deployment: Server (AWS Lambda)
+      acceptance_criteria: {minimal: [Proxy Bybit], full: [1,000 requests/min], error: [Invalid key: 403 error]}

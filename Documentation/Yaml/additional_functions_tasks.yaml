@@ -1,0 +1,533 @@
+epic:
+  id: aeaae80e-2573-4176-9402-23e05b006659
+  title: Additional Functions
+  priority: Low
+  duration_weeks: 10
+  dependencies:
+    - 46bf3715-2434-4cef-9bfe-f6214afe56c0 # Portfolio Monitoring
+    - ccfe0a81-ba8a-47cb-a200-05dc88dba9bb # Article Publication
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Watch-List UI
+      priority: Medium
+      hours: 80
+      description: Develop a UI for a standalone watch-list to track assets with price triggers and alerts.
+      functionality:
+        - Table: Asset, current price, trigger price, status
+        - Add/remove assets with autocomplete
+        - Set price triggers (e.g., alert if SOL > $200)
+        - Notification: Toast on trigger activation
+      api:
+        endpoint: /api/watchlist
+        request:
+          method: POST
+          path: /api/watchlist
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: SOL
+            triggerPrice: 200
+            direction: above
+        response:
+          status: 200
+          body:
+            watchId: 123
+            status: active
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Add SOL to watch-list with $200 trigger
+          - Toast notification on trigger
+        full:
+          - Support 100 assets, 1,000 triggers/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid asset: Show "Invalid Asset"
+          - API error: Show "Trigger Setup Failed"
+      prompt: How to create a watch-list UI in React Native with price triggers? Examples of autocomplete.
+    - id: FE2
+      title: Educational Guides UI
+      priority: Medium
+      hours: 80
+      description: UI for displaying educational guides (e.g., Uniswap tutorial) with multimedia support.
+      functionality:
+        - List: Guide titles, categories (DeFi, Trading)
+        - Detail view: Text, images, videos
+        - Search: Filter by keyword, category
+        - Notification: Toast on guide view
+      api:
+        endpoint: /api/guides
+        request:
+          method: GET
+          path: /api/guides?category=defi&keyword=uniswap
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            guides:
+              - id: 123
+                title: Uniswap Tutorial
+                category: defi
+                content: <p>Guide content...</p>
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display Uniswap guide
+          - Toast notification on view
+        full:
+          - Support 5 categories, 1,000 views/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No guides: Show "No Guides Found"
+          - API error: Show "Guide Fetch Failed"
+      prompt: How to create an educational guides UI in Wails? Examples of multimedia integration.
+    - id: FE3
+      title: Social Sharing UI
+      priority: Low
+      hours: 60
+      description: UI for sharing assets or guides via QR codes and social platforms.
+      functionality:
+        - Generate QR code for asset/guide URL
+        - Share buttons: Twitter, Telegram
+        - Animation: QR code reveal
+        - Notification: Toast on share
+      api:
+        endpoint: /api/share
+        request:
+          method: POST
+          path: /api/share
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            type: asset
+            id: SOL
+        response:
+          status: 200
+          body:
+            qrCode: data:image/png;base64,...
+            url: https://wealthproject.com/asset/SOL
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Generate QR code for SOL
+          - Toast notification on share
+        full:
+          - Support 2 types, 1,000 shares/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid type: Show "Invalid Share Type"
+          - API error: Show "Share Failed"
+      prompt: How to create a social sharing UI in React Native with QR codes? Examples of sharing APIs.
+    - id: FE4
+      title: Simplified Mode UI
+      priority: Low
+      hours: 60
+      description: UI for a simplified mode displaying top-10 assets for beginners.
+      functionality:
+        - Dashboard: Top-10 assets by market cap
+        - Buy/sell buttons: Simplified trade flow
+        - Notification: Toast on mode toggle
+        - Animation: Dashboard transition
+      api:
+        endpoint: /api/simple
+        request:
+          method: GET
+          path: /api/simple?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            assets:
+              - symbol: BTC
+                price: 60000
+                marketCap: 1200000000000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display top-10 assets
+          - Toast notification on toggle
+        full:
+          - Support 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No data: Show "No Assets Available"
+          - API error: Show "Data Fetch Failed"
+      prompt: How to create a simplified mode UI in Wails for beginners? Examples of dashboard design.
+    - id: FE5
+      title: Additional Functions Analytics UI
+      priority: Low
+      hours: 60
+      description: Dashboard for analytics on watch-list, guides, and sharing activities.
+      functionality:
+        - Graphs: Watch-list triggers, guide views (Recharts)
+        - Filters: Date, feature
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/additional/analytics
+        request:
+          method: GET
+          path: /api/additional/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                watchlistTriggers: 50
+                guideViews: 100
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display guide views graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 updates/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create an analytics dashboard for additional functions in React Native? Examples of Recharts.
+    - id: FE6
+      title: Additional Functions Notifications UI
+      priority: Low
+      hours: 60
+      description: UI for real-time notifications related to additional functions (e.g., watch-list trigger, guide viewed).
+      functionality:
+        - Toast notifications: Trigger activated, guide viewed
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: additional
+            message: Watch-list trigger for SOL activated
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for watch-list trigger
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for additional functions in Wails? Examples of toast animations.
+    - id: BE1
+      title: Watch-List Trigger Service
+      priority: Medium
+      hours: 60
+      description: Backend for managing watch-list triggers and sending notifications when activated.
+      functionality:
+        - Trigger logic: Price thresholds (e.g., SOL > $200)
+        - Data source: Chainlink oracles
+        - Notification: WebSocket and Firebase push
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/watchlist/trigger
+        request:
+          method: POST
+          path: /api/watchlist/trigger
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: SOL
+            triggerPrice: 200
+            direction: above
+        response:
+          status: 200
+          body:
+            triggerId: 123
+            status: active
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Set SOL trigger at $200
+          - Send WebSocket notification
+        full:
+          - 1,000 triggers/min, Firebase push
+          - ELK logs
+        error:
+          - Invalid trigger: 400 error, ELK log
+          - Data failure: 500 error, ELK log
+      prompt: How to implement watch-list triggers with Chainlink? Examples of Firebase push.
+    - id: BE2
+      title: Guides Storage Service
+      priority: Medium
+      hours: 60
+      description: Backend for storing and retrieving educational guides on IPFS.
+      functionality:
+        - Storage: Guides on IPFS
+        - Metadata: PostgreSQL
+        - Notification: Trigger WebSocket on guide update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/guides
+        request:
+          method: GET
+          path: /api/guides?category=defi
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            guides:
+              - id: 123
+                title: Uniswap Tutorial
+                category: defi
+                cid: Qm123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store Uniswap guide on IPFS
+          - Send WebSocket notification
+        full:
+          - 1,000 guides/min, PostgreSQL metadata
+          - ELK logs
+        error:
+          - CID inaccessible: 404 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to store guides on IPFS with PostgreSQL metadata? Examples of IPFS APIs.
+    - id: BE3
+      title: Social Sharing Service
+      priority: Low
+      hours: 60
+      description: Backend for generating QR codes and tracking social shares.
+      functionality:
+        - QR code generation: For asset/guide URLs
+        - Tracking: Share counts via Matomo
+        - Notification: Trigger WebSocket on share
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/share
+        request:
+          method: POST
+          path: /api/share
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            type: asset
+            id: SOL
+        response:
+          status: 200
+          body:
+            qrCode: data:image/png;base64,...
+            url: https://wealthproject.com/asset/SOL
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Generate QR code for SOL
+          - Send WebSocket notification
+        full:
+          - 1,000 shares/min, Matomo tracking
+          - ELK logs
+        error:
+          - Invalid type: 400 error, ELK log
+          - QR failure: 500 error, ELK log
+      prompt: How to generate QR codes for social sharing with Matomo? Examples of QR code APIs.
+    - id: BE4
+      title: Simplified Mode Service
+      priority: Low
+      hours: 60
+      description: Backend for providing top-10 asset data for simplified mode using Firebase.
+      functionality:
+        - Data: Top-10 assets by market cap
+        - Storage: Firebase Realtime Database
+        - Notification: Trigger WebSocket on update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/simple
+        request:
+          method: GET
+          path: /api/simple?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            assets:
+              - symbol: BTC
+                price: 60000
+                marketCap: 1200000000000
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Fetch top-10 assets from Firebase
+          - Send WebSocket notification
+        full:
+          - 1,000 requests/min, real-time updates
+          - ELK logs
+        error:
+          - No data: 404 error, ELK log
+          - Firebase failure: 500 error, ELK log
+      prompt: How to provide top-10 asset data with Firebase? Examples of Realtime Database.
+    - id: BE5
+      title: Guides Cache Service
+      priority: Low
+      hours: 60
+      description: Cache guide content with Redis to reduce IPFS calls.
+      functionality:
+        - Caching: Redis (TTL 5 min)
+        - Invalidation: On guide update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/guides/cache
+        request:
+          method: GET
+          path: /api/guides/cache?guideId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            content: <p>Cached guide...</p>
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cache guide content
+          - Access in < 20ms
+        full:
+          - 1,000 requests/min, cache invalidation
+          - ELK logs
+        error:
+          - Cache miss: 404 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: How to cache guides with Redis? Examples of cache invalidation.
+    - id: BE6
+      title: Additional Functions Testing
+      priority: Low
+      hours: 60
+      description: Testing for watch-list, guides, sharing, and simplified mode services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test additional functions services with Locust? Examples of test cases.
+    - id: BE7
+      title: Additional Functions Notifications Service
+      priority: Low
+      hours: 60
+      description: Backend to generate and broadcast notifications for additional functions via WebSocket.
+      functionality:
+        - Triggers: Watch-list trigger, guide viewed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: additional
+            message: Watch-list trigger for SOL activated
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast watch-list trigger notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for additional functions? Examples of Redis queuing.
+services:
+  - name: Watch-List Trigger Service
+    description: Manages watch-list triggers with Chainlink data
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for additional functions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Watch-List Trigger
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Guides Storage
+      type: AWS EC2
+      specs:
+        instance: m5.large
+        cores: 2
+        ram: 8GB
+  storage: 12TB (S3, IPFS)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

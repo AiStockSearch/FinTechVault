@@ -1,0 +1,596 @@
+epic:
+  id: b57e72a8-a78a-4dab-aa0c-db28155dad34
+  title: Crowdfunding CRUD
+  priority: Medium
+  duration_weeks: 10
+  dependencies:
+    - a58fc8fb-7839-4ace-9449-ad06a58391ed # DeFi Limit Orders
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Campaign Creation UI
+      priority: High
+      hours: 80
+      description: Develop a UI for creating crowdfunding campaigns with tokenization options and funding goals.
+      functionality:
+        - Form: Title, description, goal ($10,000 min), duration, token name
+        - Validation: Required fields, goal format
+        - Preview: Campaign and token summary
+        - Notification: Toast on campaign creation
+      api:
+        endpoint: /api/crowdfunding/create
+        request:
+          method: POST
+          path: /api/crowdfunding/create
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            title: Green Energy Project
+            description: Fund renewable energy solutions
+            goal: 10000
+            duration: 60d
+            tokenName: GREEN
+        response:
+          status: 200
+          body:
+            campaignId: 123
+            status: pending
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Create campaign with $10,000 goal
+          - Toast notification on success
+        full:
+          - Support 1,000 creations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid goal: Show "Invalid Goal Amount"
+          - API error: Show "Creation Failed"
+      prompt: How to create a crowdfunding campaign UI in React Native? Examples of form validation.
+    - id: FE2
+      title: Campaign List UI
+      priority: Medium
+      hours: 60
+      description: UI for listing and browsing crowdfunding campaigns with filters.
+      functionality:
+        - Table: Title, goal, raised, token, status
+        - Filters: Category, status, date
+        - Pagination: 20 campaigns/page
+        - Notification: Toast on list refresh
+      api:
+        endpoint: /api/crowdfunding/list
+        request:
+          method: GET
+          path: /api/crowdfunding/list?category=tech&status=active
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            campaigns:
+              - id: 123
+                title: Green Energy Project
+                goal: 10000
+                raised: 5000
+                token: GREEN
+                status: active
+            total: 100
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 active campaigns
+          - Toast notification on refresh
+        full:
+          - Support 1,000 campaigns/min, 5 filters
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No campaigns: Show "No Campaigns Found"
+          - API error: Show "List Fetch Failed"
+      prompt: How to create a crowdfunding campaign list UI in Wails? Examples of pagination.
+    - id: FE3
+      title: Contribution UI
+      priority: High
+      hours: 60
+      description: UI for contributing to campaigns via Uniswap (ETH, DAI) with token rewards.
+      functionality:
+        - Form: Amount ($1,000 min), asset (ETH, DAI), wallet
+        - Confirmation: Modal with gas estimate, token allocation
+        - Animation: Contribution progress
+        - Notification: Toast on contribution success
+      api:
+        endpoint: /api/crowdfunding/contribute
+        request:
+          method: POST
+          path: /api/crowdfunding/contribute
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            amount: 1000
+            asset: ETH
+            walletAddress: 0x123...
+        response:
+          status: 200
+          body:
+            contributionId: 456
+            status: completed
+            txHash: 0x789...
+            tokens: 1000 GREEN
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Contribute 1,000 ETH to campaign
+          - Toast notification on success
+        full:
+          - Support 2 assets, 1,000 contributions/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid amount: Show "Invalid Amount"
+          - API error: Show "Contribution Failed"
+      prompt: How to create a crowdfunding contribution UI in React Native with Uniswap? Examples of gas estimation.
+    - id: FE4
+      title: Campaign Token UI
+      priority: Medium
+      hours: 60
+      description: UI for managing and viewing campaign tokens (ERC-20).
+      functionality:
+        - Table: Token name, balance, campaign
+        - Actions: Transfer, view on explorer
+        - Notification: Toast on token action
+        - Animation: Token balance update
+      api:
+        endpoint: /api/crowdfunding/token
+        request:
+          method: GET
+          path: /api/crowdfunding/token?userId=u123&campaignId=123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            tokens:
+              - name: GREEN
+                balance: 1000
+                campaignId: 123
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display GREEN token balance
+          - Toast notification on action
+        full:
+          - Support 1,000 token actions/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No tokens: Show "No Tokens Found"
+          - API error: Show "Token Fetch Failed"
+      prompt: How to create a token management UI in Wails for ERC-20? Examples of token actions.
+    - id: FE5
+      title: Crowdfunding Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for campaign contribution analytics with graphs.
+      functionality:
+        - Graphs: Contributions over time, contributor count (Recharts)
+        - Filters: Date, campaign
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/crowdfunding/analytics
+        request:
+          method: GET
+          path: /api/crowdfunding/analytics?campaignId=123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                contributions: 2000
+                contributors: 50
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display contribution graph for campaign
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a crowdfunding analytics dashboard in Wails? Examples of Recharts.
+    - id: FE6
+      title: Crowdfunding Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to crowdfunding actions (e.g., contribution received, campaign approved).
+      functionality:
+        - Toast notifications: Contribution success, campaign update
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: crowdfunding
+            message: Contribution of 1,000 ETH received
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for contribution
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for crowdfunding actions in Wails? Examples of toast animations.
+    - id: BE1
+      title: Campaign Creation Service
+      priority: High
+      hours: 80
+      description: Backend for creating and storing crowdfunding campaigns with DAO approval and tokenization.
+      functionality:
+        - Creation: Store campaign details
+        - DAO: Submit for approval (200 WTH min)
+        - Tokenization: Deploy ERC-20 token (Solidity)
+        - Storage: PostgreSQL, IPFS for content
+        - Notification: Trigger WebSocket on creation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/create
+        request:
+          method: POST
+          path: /api/crowdfunding/create
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            title: Green Energy Project
+            description: Fund renewable energy solutions
+            goal: 10000
+            duration: 60d
+            tokenName: GREEN
+        response:
+          status: 200
+          body:
+            campaignId: 123
+            tokenAddress: 0x456...
+            status: pending
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Create campaign with $10,000 goal
+          - Deploy GREEN token
+          - Send WebSocket notification
+        full:
+          - 1,000 creations/min, DAO integration
+          - ELK logs
+        error:
+          - Invalid goal: 400 error, ELK log
+          - Token deployment failure: 500 error, ELK log
+      prompt: How to create a crowdfunding campaign backend with DAO and ERC-20 tokenization? Examples of Solidity.
+    - id: BE2
+      title: Campaign Update Service
+      priority: Medium
+      hours: 60
+      description: Backend for updating campaign details via DAO governance.
+      functionality:
+        - Updates: Title, description, goal
+        - DAO: Require vote for changes
+        - Notification: Trigger WebSocket on update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/update
+        request:
+          method: PUT
+          path: /api/crowdfunding/update
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            title: Updated Green Energy Project
+        response:
+          status: 200
+          body:
+            campaignId: 123
+            status: updated
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Update campaign title
+          - Send WebSocket notification
+        full:
+          - 1,000 updates/min, DAO voting
+          - ELK logs
+        error:
+          - Invalid campaign: 404 error, ELK log
+          - DAO failure: 403 error, ELK log
+      prompt: How to update crowdfunding campaigns with DAO governance? Examples of update APIs.
+    - id: BE3
+      title: Campaign Deletion Service
+      priority: Low
+      hours: 40
+      description: Backend for deleting campaigns with IPFS and DAO approval.
+      functionality:
+        - Deletion: Remove campaign from IPFS, PostgreSQL
+        - DAO: Require vote for deletion
+        - Notification: Trigger WebSocket on deletion
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/delete
+        request:
+          method: DELETE
+          path: /api/crowdfunding/delete
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+        response:
+          status: 200
+          body:
+            status: deleted
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Delete campaign
+          - Send WebSocket notification
+        full:
+          - 1,000 deletions/min, DAO voting
+          - ELK logs
+        error:
+          - Invalid campaign: 404 error, ELK log
+          - DAO failure: 403 error, ELK log
+      prompt: How to delete crowdfunding campaigns with DAO approval? Examples of IPFS deletion.
+    - id: BE4
+      title: Contribution Processing Service
+      priority: High
+      hours: 80
+      description: Backend for processing contributions to campaigns via Uniswap with token rewards.
+      functionality:
+        - Contributions: ETH/DAI swaps on Uniswap V3
+        - Token rewards: Allocate ERC-20 tokens
+        - Validation: Sufficient balance, campaign status
+        - Storage: PostgreSQL for records
+        - Notification: Trigger WebSocket on contribution
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/contribute
+        request:
+          method: POST
+          path: /api/crowdfunding/contribute
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            amount: 1000
+            asset: ETH
+            walletAddress: 0x123...
+        response:
+          status: 200
+          body:
+            contributionId: 456
+            status: completed
+            txHash: 0x789...
+            tokens: 1000 GREEN
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Process 1,000 ETH contribution
+          - Allocate 1,000 GREEN tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 contributions/min, 2 assets
+          - ELK logs
+        error:
+          - Insufficient balance: 400 error, ELK log
+          - Campaign closed: 403 error, ELK log
+      prompt: How to process crowdfunding contributions on Uniswap with token rewards? Examples of Web3.js.
+    - id: BE5
+      title: Crowdfunding Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting campaign contribution analytics with Matomo.
+      functionality:
+        - Metrics: Contributions, contributor count
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/analytics
+        request:
+          method: GET
+          path: /api/crowdfunding/analytics?campaignId=123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                contributions: 2000
+                contributors: 50
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 10 contributions in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid campaign: 404 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect crowdfunding analytics with Matomo? Examples of analytics APIs.
+    - id: BE6
+      title: Tokenization Service
+      priority: Medium
+      hours: 60
+      description: Backend for deploying and managing ERC-20 tokens for campaigns.
+      functionality:
+        - Deployment: Create ERC-20 token (Solidity)
+        - Management: Mint, transfer tokens
+        - Storage: PostgreSQL for token metadata
+        - Notification: Trigger WebSocket on token action
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/crowdfunding/token
+        request:
+          method: POST
+          path: /api/crowdfunding/token
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            action: mint
+            amount: 1000
+        response:
+          status: 200
+          body:
+            tokenId: 789
+            status: minted
+            txHash: 0x123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Mint 1,000 GREEN tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 token actions/min
+          - ELK logs
+        error:
+          - Invalid campaign: 404 error, ELK log
+          - Token action failure: 500 error, ELK log
+      prompt: How to deploy and manage ERC-20 tokens for crowdfunding? Examples of Solidity.
+    - id: BE7
+      title: Crowdfunding Testing
+      priority: Medium
+      hours: 60
+      description: Testing for campaign CRUD, contribution, tokenization, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test crowdfunding CRUD services with Locust? Examples of test cases.
+    - id: BE8
+      title: Crowdfunding Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast crowdfunding-related notifications via WebSocket.
+      functionality:
+        - Triggers: Contribution received, campaign approved
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: crowdfunding
+            message: Contribution of 1,000 ETH received
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast contribution notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for crowdfunding actions? Examples of Redis queuing.
+services:
+  - name: Crowdfunding Management Service
+    description: Manages crowdfunding campaigns, contributions, and tokens
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - PostgreSQL
+      - IPFS
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for crowdfunding actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Crowdfunding Management
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, IPFS, PostgreSQL)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

@@ -1,0 +1,82 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserPublications id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <Publications>
+        <Article id="art001">
+            <Title>How to Earn 20% Annually with Wealth Index</Title>
+            <ContentHash>ipfs://QmXyz123</ContentHash>
+            <Storage>ipfs</Storage>
+            <BackupStorage>arweave</BackupStorage>
+            <ContentPreview>Learn how to diversify with crypto indices...</ContentPreview>
+            <CreatedAt>2025-06-10T14:00:00Z</CreatedAt>
+            <Languages>
+                <Language code="en" title="How to Earn 20% Annually"/>
+                <Language code="ru" title="Как заработать 20% годовых"/>
+                <Language code="zh" title="如何实现20%的年回报"/>
+                <Language code="es" title="Cómo ganar un 20% anual"/>
+                <Language code="fr" title="Comment gagner 20% par an"/>
+            </Languages>
+            <Monetization>
+                <SubscriptionPriceUSD>5.00</SubscriptionPriceUSD>
+                <PremiumPriceUSD>10.00</PremiumPriceUSD>
+                <Subscribers>100</Subscribers>
+                <PremiumSubscribers>20</PremiumSubscribers>
+                <InvestmentSharePercentage>5</InvestmentSharePercentage>
+                <TotalRevenueUSD>700.00</TotalRevenueUSD>
+                <PayoutWalletAddress>0x1234567890abcdef</PayoutWalletAddress>
+                <PayoutCurrency>USDT</PayoutCurrency>
+                <PayoutSchedule>monthly</PayoutSchedule>
+                <PayoutHistory>
+                    <Payout id="pay001" amountUSD="500.00" currency="USDT" executedAt="2025-06-11T00:00:00Z" transactionHash="0xabcdef9876543210"/>
+                </PayoutHistory>
+            </Monetization>
+            <Analytics>
+                <Views>500</Views>
+                <Shares>50</Shares>
+                <Likes>120</Likes>
+                <Comments>30</Comments>
+                <EngagementRate>3.5</EngagementRate>
+            </Analytics>
+            <Sharing>
+                <QRCode id="qr_art_001">
+                    <URL>https://example.com/qr/art001</URL>
+                    <GeneratedAt>2025-06-10T14:30:00Z</GeneratedAt>
+                    <UsageCount>40</UsageCount>
+                </QRCode>
+                <SocialLinks>
+                    <Link platform="x" url="https://x.com/share/art001" shareCount="50"/>
+                    <Link platform="telegram" url="https://t.me/share/art001" shareCount="30"/>
+                    <Link platform="discord" url="https://discord.com/share/art001" shareCount="10"/>
+                </SocialLinks>
+            </Sharing>
+        </Article>
+        <Article id="art002">
+            <Title>Hedging Strategies with VIX</Title>
+            <ContentHash>ipfs://QmAbc456</ContentHash>
+            <Storage>ipfs</Storage>
+            <CreatedAt>2025-06-11T10:00:00Z</CreatedAt>
+            <Languages>
+                <Language code="en" title="Hedging Strategies"/>
+            </Languages>
+            <Monetization>
+                <SubscriptionPriceUSD>5.00</SubscriptionPriceUSD>
+                <Subscribers>10</Subscribers>
+                <TotalRevenueUSD>50.00</TotalRevenueUSD>
+            </Monetization>
+            <Analytics>
+                <Views>100</Views>
+                <Shares>5</Shares>
+            </Analytics>
+            <Sharing>
+                <QRCode id="qr_art_002">
+                    <URL>https://example.com/qr/art002</URL>
+                    <GeneratedAt>2025-06-11T10:30:00Z</GeneratedAt>
+                    <UsageCount>5</UsageCount>
+                </QRCode>
+            </Sharing>
+        </Article>
+    </Publications>
+</UserPublications>
+```
+
+**Пояснение**: Этот сервис хранит статьи, их метаданные, монетизацию (подписки, выплаты), аналитику (просмотры, шаринги) и шаринг (QR-коды, социальные ссылки).

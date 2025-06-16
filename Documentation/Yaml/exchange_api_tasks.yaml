@@ -1,0 +1,555 @@
+epic:
+  id: b38123fb-2c78-4a70-a288-5e702c1ce60f
+  title: Exchange API Integration
+  priority: High
+  duration_weeks: 12
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - 46bf3715-2434-4cef-9bfe-f6214afe56c0 # Portfolio Monitoring
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+    - name: OKX API
+      url: https://www.okx.com/docs-v5/en/
+    - name: Bitfinex API
+      url: https://docs.bitfinex.com/docs/rest-auth
+  tasks:
+    # Frontend Tasks
+    - id: FE1
+      title: Order History UI (Client-Side API)
+      priority: High
+      hours: 80
+      description: Develop UI for displaying order history from Bybit/OKX/Bitfinex using client-side API calls with user-provided API keys.
+      functionality:
+        - Table with columns: ID, asset, price, volume, status, date
+        - Filters: asset (BTC, SOL), type (limit/market), status (open/closed)
+        - Pagination: 50 orders/page
+        - Local API key storage (encrypted localStorage)
+      api:
+        endpoint: External (Bybit /v5/order/history, OKX /api/v5/trade/orders-history)
+        request:
+          method: GET
+          path: https://api.bybit.com/v5/order/history?symbol=SOLUSDT&orderType=Limit&status=Open
+          headers:
+            X-API-Key: "{user_api_key}"
+            X-Signature: "{signature}"
+          body: {}
+        response:
+          status: 200
+          body:
+            list:
+              - orderId: "123"
+                symbol: SOLUSDT
+                price: "200"
+                qty: "2"
+                status: Open
+                time: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 SOL orders in < 1s
+          - Filters apply correctly
+        full:
+          - Pagination, sorting, 1,000 orders/min
+          - WCAG 2.1 compliance
+          - Localization (RU, EN, CN)
+        error:
+          - Invalid API key: Show "Invalid API Key"
+          - API timeout: Show "Request Timed Out"
+      prompt: "How to integrate Bybit API in React Native for order history? Examples of fetch with API keys."
+    - id: FE2
+      title: Withdraw Funds UI (Client-Side API)
+      priority: High
+      hours: 80
+      description: Create a form for withdrawing funds, calling Bybit/OKX APIs client-side with 2FA/NFC validation.
+      functionality:
+        - Fields: asset (USDT, BTC, ETH), amount ($40+), address, 2FA code, NFC token
+        - Validation: min amount, address format
+        - Animation: Progress bar for withdrawal status
+        - Notification: Toast on success/failure
+      api:
+        endpoint: External (Bybit /v5/asset/withdraw, OKX /api/v5/asset/withdrawal)
+        request:
+          method: POST
+          path: https://api.bybit.com/v5/asset/withdraw
+          headers:
+            X-API-Key: "{user_api_key}"
+            X-Signature: "{signature}"
+            X-2FA-Code: "123456"
+          body:
+            coin: USDT
+            amount: "200"
+            address: "0x123..."
+        response:
+          status: 200
+          body:
+            id: "456"
+            status: pending
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Submit $200 USDT withdrawal
+          - 2FA/NFC UI functional
+        full:
+          - Validation, animations, 1,000 withdrawals/min
+          - Localization (RU, EN, CN)
+          - Notification on success
+        error:
+          - Invalid 2FA: Show "Invalid 2FA Code"
+          - Invalid address: Show "Invalid Address"
+      prompt: "How to create a withdrawal form in Wails with Bybit API? Examples of 2FA and NFC."
+    - id: FE3
+      title: Internal Transfers UI (Client-Side API)
+      priority: Medium
+      hours: 60
+      description: UI for internal transfers, calling Bybit/OKX APIs client-side with autocomplete for addresses.
+      functionality:
+        - Fields: asset, amount, internal address (autocomplete)
+        - Modal confirmation dialog
+        - Animation: Success notification
+        - Notification: Toast on transfer completion
+      api:
+        endpoint: External (Bybit /v5/asset/transfer, OKX /api/v5/asset/transfer)
+        request:
+          method: POST
+          path: https://api.bybit.com/v5/asset/transfer
+          headers:
+            X-API-Key: "{user_api_key}"
+            X-Signature: "{signature}"
+          body:
+            coin: BTC
+            amount: "1"
+            toAccountId: internal123
+        response:
+          status: 200
+          body:
+            transferId: "789"
+            status: success
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Transfer 1 BTC in < 1s
+          - Modal confirmation works
+        full:
+          - Autocomplete, animations, 1,000 transfers/min
+          - WCAG 2.1
+          - Notification on success
+        error:
+          - Invalid address: Show "Invalid Address"
+          - API error: Show "Transfer Failed"
+      prompt: "How to implement internal transfer UI in React Native with OKX API? Examples of autocomplete."
+    - id: FE4
+      title: Operations Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for visualizing orders, withdrawals, and transfers with filters and graphs.
+      functionality:
+        - Filters: date, asset, operation type
+        - Graphs: volume, frequency (Recharts)
+        - Export: CSV/PDF
+        - Notification: Toast for export completion
+      api:
+        endpoint: /api/operations/analytics
+        request:
+          method: GET
+          path: /api/operations/analytics?startDate=2025-06-01&endDate=2025-06-15&asset=BTC
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                volume: 1000
+                count: 50
+            totalVolume: 50000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Graph for 10 BTC operations
+          - Date filter applies
+        full:
+          - 5 metrics, CSV export, localization (RU, EN, CN)
+          - Notification on export
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: "How to create an analytics dashboard in Wails with Recharts? Examples of CSV export."
+    - id: FE5
+      title: API Keys Management UI
+      priority: High
+      hours: 60
+      description: Form for input, validation, and management of API keys for Bybit/OKX/Bitfinex.
+      functionality:
+        - Fields: exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /v5/account/info)
+        - Storage: Encrypted localStorage (AES-256)
+        - Animation: Success notification
+        - Notification: Toast on key validation
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key, display balance
+          - Notification on success
+        full:
+          - 3 exchanges, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid Key"
+          - API error: Show "Validation Failed"
+      prompt: "How to create an API key management UI in React Native? Examples of AES-256 encryption."
+    - id: FE6
+      title: Position Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications of position changes (e.g., order executed, trade completed).
+      functionality:
+        - Toast notifications: Order status, trade execution
+        - List: Notification history (type, message, timestamp)
+        - Integration: WebSocket client for real-time updates
+        - Animation: Fade-in for toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: order
+            message: Order 123 executed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for order execution
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: "How to implement WebSocket notifications in Wails? Examples of toast animations."
+    # Backend Tasks
+    - id: BE1
+      title: Order History Proxy (Server-Side)
+      priority: High
+      hours: 80
+      description: Backend proxy for order history to handle CORS or rate limits, caching responses.
+      functionality:
+        - Proxy to Bybit /v5/order/history, OKX /api/v5/trade/orders-history
+        - Caching: Redis (TTL 5 min)
+        - Logging: ELK Stack for success/errors
+        - Rate-limiting: 100 requests/min/user
+      api:
+        endpoint: /api/orders/history
+        request:
+          method: GET
+          path: /api/orders/history?symbol=SOL&orderType=limit&status=open
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body: {}
+        response:
+          status: 200
+          body:
+            orders:
+              - id: "123"
+                symbol: SOL
+                price: 200
+                quantity: 2
+                status: open
+                timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Proxy 10 SOL orders in < 100ms
+          - Cache active
+        full:
+          - 1,000 orders/min, 5 assets
+          - ELK logs success/errors
+          - Rate-limiting enforced
+        error:
+          - API timeout: 500 error, ELK log
+          - Invalid key: 403 error, ELK log
+      prompt: "How to create a proxy for Bybit API with Redis caching? Examples of CORS handling."
+    - id: BE2
+      title: Withdraw Funds Proxy (Server-Side)
+      priority: High
+      hours: 80
+      description: Backend proxy for withdrawals, ensuring secure API key handling and 2FA/NFC validation.
+      functionality:
+        - Proxy to Bybit /v5/asset/withdraw, OKX /api/v5/asset/withdrawal
+        - 2FA (TOTP), NFC (Vault) validation
+        - Queue: RabbitMQ for async processing
+        - Logging: ELK Stack
+        - Notification: Trigger WebSocket notification
+      api:
+        endpoint: /api/withdraw
+        request:
+          method: POST
+          path: /api/withdraw
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            asset: USDT
+            amount: 200
+            address: "0x123..."
+            2faCode: "123456"
+            nfcToken: abc123
+        response:
+          status: 200
+          body:
+            withdrawalId: "456"
+            status: pending
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Withdraw $200 USDT in < 5s
+          - Queue processes request
+        full:
+          - 1,000 withdrawals/min, 5 currencies
+          - OWASP audit passed
+          - WebSocket notification sent
+        error:
+          - Invalid 2FA: 403 error, ELK log
+          - Queue failure: 500 error, ELK log
+      prompt: "How to create a withdrawal proxy with RabbitMQ and 2FA? Examples of Vault integration."
+    - id: BE3
+      title: Internal Transfers Proxy (Server-Side)
+      priority: Medium
+      hours: 60
+      description: Backend proxy for internal transfers with address validation and transaction history.
+      functionality:
+        - Proxy to Bybit /v5/asset/transfer, OKX /api/v5/asset/transfer
+        - Address validation via API
+        - Storage: PostgreSQL for history
+        - Logging: ELK Stack
+        - Notification: Trigger WebSocket notification
+      api:
+        endpoint: /api/transfer
+        request:
+          method: POST
+          path: /api/transfer
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body:
+            asset: BTC
+            amount: 1
+            toAddress: internal123
+        response:
+          status: 200
+          body:
+            transferId: "789"
+            status: completed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Transfer 1 BTC in < 3s
+          - History saved
+        full:
+          - 1,000 transfers/min, 5 currencies
+          - ELK logs
+          - WebSocket notification sent
+        error:
+          - Invalid address: 400 error, ELK log
+          - DB failure: 500 error, ELK log
+      prompt: "How to create a transfer proxy with PostgreSQL? Examples of address validation."
+    - id: BE4
+      title: Internal Address Storage
+      priority: Medium
+      hours: 60
+      description: Backend for encrypted storage and retrieval of internal addresses.
+      functionality:
+        - Encryption: AES-256, AWS KMS, Vault
+        - Storage: PostgreSQL (encrypted records)
+        - Key rotation: Every 30 days
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/wallet/addresses
+        request:
+          method: GET
+          path: /api/wallet/addresses?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            addresses:
+              - asset: USDT
+                address: encrypted123
+      deployment: Server (AWS RDS)
+      acceptance_criteria:
+        minimal:
+          - Store 1 address, access in < 50ms
+        full:
+          - 10,000 addresses, key rotation
+          - 100% encryption audit
+        error:
+          - Invalid userId: 403 error, ELK log
+          - DB failure: 500 error, ELK log
+      prompt: "How to set up encrypted address storage with Vault and PostgreSQL? Examples of key rotation."
+    - id: BE5
+      title: Operations Monitoring and Analytics
+      priority: Medium
+      hours: 60
+      description: Backend for collecting metrics and analytics for operations, integrating with Prometheus/Grafana and Matomo.
+      functionality:
+        - Metrics: Transactions, latency, errors (Prometheus)
+        - Analytics: Frequency, volume (Matomo)
+        - Logging: ELK Stack
+      api:
+        endpoint: /metrics
+        request:
+          method: GET
+          path: /metrics
+          headers: {}
+          body: {}
+        response:
+          status: 200
+          body: |
+            # TYPE transactions_total counter
+            transactions_total{type="withdraw"} 100
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Grafana shows withdrawal metrics
+          - Matomo tracks transfers
+        full:
+          - 5 metrics, 1,000 records/min
+          - ELK logs errors
+        error:
+          - Missing metrics: CloudWatch alert
+          - Matomo failure: ELK log
+      prompt: "How to set up Prometheus and Matomo for transaction monitoring? Examples of metrics."
+    - id: BE6
+      title: API Keys Validation and Rate-Limiting
+      priority: High
+      hours: 60
+      description: Backend service for validating API keys and enforcing rate limits for CEX integrations.
+      functionality:
+        - Validation: Test API call (e.g., Bybit /v5/account/info)
+        - Rate-limiting: 100 requests/min/user (NGINX)
+        - Storage: Vault (AES-256)
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key, rate-limit active
+        full:
+          - 3 exchanges, 1,000 validations/min
+          - ELK logs
+        error:
+          - Invalid key: 403 error, ELK log
+          - Rate-limit exceeded: 429 error, ELK log
+      prompt: "How to validate API keys with Vault and NGINX rate-limiting? Examples of configurations."
+    - id: BE7
+      title: Position Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend service to generate and broadcast position-related notifications via WebSocket.
+      functionality:
+        - Triggers: Order execution, trade completion
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for message buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: order
+            message: Order 123 executed
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast order execution notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: "How to set up a WebSocket notification service with Redis? Examples of message queuing."
+
+services:
+  - name: Exchange API Proxy
+    description: Serverless proxy for CEX APIs to handle CORS and rate limits
+    type: API
+    deployment: AWS Lambda
+    dependencies: [Redis, ELK Stack]
+  - name: WebSocket Notification Service
+    description: Real-time notification service for position updates
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies: [Redis, ELK Stack]
+
+infrastructure:
+  servers:
+    - name: API Proxy
+      type: AWS Lambda
+      specs: { memory: 512MB, timeout: 30s }
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs: { instance: m5.xlarge, cores: 4, ram: 16GB }
+  storage: 12TB (S3, IPFS)
+  cost: $6000-$12000/month
+  monitoring: [ELK Stack, Prometheus/Grafana, CloudWatch]

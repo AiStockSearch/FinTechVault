@@ -1,0 +1,576 @@
+epic:
+  id: 438c90a2-9cb3-459a-81f1-9ff3360cfd7a
+  title: Authorization and Profile
+  priority: High
+  duration_weeks: 10
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: OAuth2 Login UI
+      priority: High
+      hours: 80
+      description: Develop a UI for OAuth2-based login supporting multiple providers (Google, GitHub, Twitter).
+      functionality:
+        - Login buttons for 3 providers
+        - Redirect flow with token handling
+        - Notification: Toast on successful login
+        - Localization: RU, EN, CN
+      api:
+        endpoint: /api/auth/oauth
+        request:
+          method: POST
+          path: /api/auth/oauth
+          headers:
+            Content-Type: application/json
+          body:
+            provider: google
+            code: auth_code_123
+        response:
+          status: 200
+          body:
+            accessToken: jwt_token_123
+            refreshToken: refresh_token_456
+            userId: u123
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Login with Google, display user email
+          - Toast notification on success
+        full:
+          - Support 3 providers, 1,000 logins/min
+          - Localization (RU, EN, CN)
+          - WCAG 2.1
+        error:
+          - Invalid code: Show "Login Failed"
+          - Provider error: Show "Authentication Error"
+      prompt: How to implement OAuth2 login UI in React Native with Google? Examples of token handling.
+    - id: FE2
+      title: Multi-Factor Authentication UI
+      priority: High
+      hours: 60
+      description: UI for configuring and using multi-factor authentication (TOTP, NFC).
+      functionality:
+        - Setup form: Enable TOTP, scan QR code
+        - NFC integration: Scan for confirmation
+        - Input: TOTP code entry
+        - Notification: Toast on MFA setup
+      api:
+        endpoint: /api/auth/mfa
+        request:
+          method: POST
+          path: /api/auth/mfa
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            type: totp
+            code: 123456
+        response:
+          status: 200
+          body:
+            status: enabled
+            qrCode: data:image/png;base64,...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Enable TOTP, display QR code
+          - Toast notification on setup
+        full:
+          - Support TOTP/NFC, 1,000 verifications/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid code: Show "Invalid MFA Code"
+          - NFC failure: Show "NFC Scan Failed"
+      prompt: How to create an MFA UI in Wails with TOTP and NFC? Examples of QR code generation.
+    - id: FE3
+      title: User Profile UI
+      priority: Medium
+      hours: 60
+      description: UI for managing user profile settings (e.g., name, email, preferences).
+      functionality:
+        - Form: Edit name, email, language, notification preferences
+        - Validation: Email format, required fields
+        - Notification: Toast on profile update
+        - Animation: Form submission progress
+      api:
+        endpoint: /api/profile
+        request:
+          method: PUT
+          path: /api/profile
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            name: John Doe
+            email: john@example.com
+            preferences:
+              language: en
+              notifications: true
+        response:
+          status: 200
+          body:
+            status: updated
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Update user name and email
+          - Toast notification on success
+        full:
+          - Support 5 fields, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid email: Show "Invalid Email"
+          - API error: Show "Profile Update Failed"
+      prompt: How to create a user profile UI in React Native? Examples of form validation.
+    - id: FE4
+      title: Web3 Authentication UI
+      priority: Medium
+      hours: 60
+      description: UI for Web3-based authentication using MetaMask/WalletConnect.
+      functionality:
+        - Connect button: Initiate MetaMask connection
+        - Display: Wallet address, connection status
+        - Notification: Toast on successful connection
+        - Animation: Wallet connect progress
+      api:
+        endpoint: /api/auth/web3
+        request:
+          method: POST
+          path: /api/auth/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            wallet: metamask
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            accessToken: jwt_token_789
+            userId: u123
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Connect MetaMask, display address
+          - Toast notification on success
+        full:
+          - Support 2 wallets, 1,000 connections/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid signature: Show "Invalid Signature"
+          - Wallet error: Show "Connection Failed"
+      prompt: How to implement Web3 authentication UI with MetaMask in Wails? Examples of Web3.js integration.
+    - id: FE5
+      title: Profile Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for user session and profile activity analytics with graphs.
+      functionality:
+        - Graphs: Login frequency, session duration (Recharts)
+        - Filters: Date, device
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/profile/analytics
+        request:
+          method: GET
+          path: /api/profile/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                logins: 10
+                sessionDuration: 300
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display login frequency graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - 1,000 updates/min
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a profile analytics dashboard in React Native? Examples of Recharts.
+    - id: FE6
+      title: Authentication Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to authentication (e.g., login, MFA setup).
+      functionality:
+        - Toast notifications: Successful login, MFA enabled
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: auth
+            message: User logged in
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for login
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for authentication in Wails? Examples of toast animations.
+    - id: BE1
+      title: OAuth2 Authentication Service
+      priority: High
+      hours: 80
+      description: Backend for handling OAuth2 authentication with multiple providers.
+      functionality:
+        - Token exchange: Google, GitHub, Twitter
+        - JWT issuance: Access/refresh tokens
+        - Notification: Trigger WebSocket on login
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/auth/oauth
+        request:
+          method: POST
+          path: /api/auth/oauth
+          headers:
+            Content-Type: application/json
+          body:
+            provider: google
+            code: auth_code_123
+        response:
+          status: 200
+          body:
+            accessToken: jwt_token_123
+            refreshToken: refresh_token_456
+            userId: u123
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Authenticate with Google, issue JWT
+          - Send WebSocket notification
+        full:
+          - 1,000 logins/min, 3 providers
+          - ELK logs
+        error:
+          - Invalid code: 400 error, ELK log
+          - Provider failure: 500 error, ELK log
+      prompt: How to implement OAuth2 authentication with Google? Examples of JWT issuance.
+    - id: BE2
+      title: Multi-Factor Authentication Service
+      priority: High
+      hours: 60
+      description: Backend for managing MFA with TOTP and NFC validation.
+      functionality:
+        - TOTP: Generate QR codes, verify codes
+        - NFC: Validate tokens via Vault
+        - Notification: Trigger WebSocket on setup
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/auth/mfa
+        request:
+          method: POST
+          path: /api/auth/mfa
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            type: totp
+            code: 123456
+        response:
+          status: 200
+          body:
+            status: enabled
+            qrCode: data:image/png;base64,...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Enable TOTP, generate QR code
+          - Send WebSocket notification
+        full:
+          - 1,000 verifications/min, TOTP/NFC
+          - ELK logs
+        error:
+          - Invalid code: 403 error, ELK log
+          - NFC failure: 400 error, ELK log
+      prompt: How to implement TOTP and NFC MFA with Vault? Examples of QR code generation.
+    - id: BE3
+      title: Profile Management Service
+      priority: Medium
+      hours: 80
+      description: Backend for managing user profiles and preferences with Matomo integration.
+      functionality:
+        - Update: Name, email, preferences
+        - Validation: Email format, required fields
+        - Analytics: Matomo for user behavior
+        - Notification: Trigger WebSocket on update
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profile
+        request:
+          method: PUT
+          path: /api/profile
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            name: John Doe
+            email: john@example.com
+            preferences:
+              language: en
+              notifications: true
+        response:
+          status: 200
+          body:
+            status: updated
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Update user name and email
+          - Send WebSocket notification
+        full:
+          - 1,000 updates/min, Matomo tracking
+          - ELK logs
+        error:
+          - Invalid email: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to manage user profiles with Matomo? Examples of profile APIs.
+    - id: BE4
+      title: Web3 Authentication Service
+      priority: Medium
+      hours: 60
+      description: Backend for Web3 authentication using MetaMask/WalletConnect.
+      functionality:
+        - Signature verification: ECDSA
+        - JWT issuance: Link wallet to user
+        - Notification: Trigger WebSocket on connection
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/auth/web3
+        request:
+          method: POST
+          path: /api/auth/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            wallet: metamask
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            accessToken: jwt_token_789
+            userId: u123
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Verify MetaMask signature, issue JWT
+          - Send WebSocket notification
+        full:
+          - 1,000 connections/min, 2 wallets
+          - ELK logs
+        error:
+          - Invalid signature: 403 error, ELK log
+          - Wallet failure: 500 error, ELK log
+      prompt: How to implement Web3 authentication with MetaMask? Examples of ECDSA verification.
+    - id: BE5
+      title: Profile Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting user session and profile analytics with InfluxDB.
+      functionality:
+        - Metrics: Logins, session duration
+        - Storage: InfluxDB for time-series
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/profile/analytics
+        request:
+          method: GET
+          path: /api/profile/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                logins: 10
+                sessionDuration: 300
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 logins in InfluxDB
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - InfluxDB failure: 500 error, ELK log
+      prompt: How to collect profile analytics with InfluxDB? Examples of time-series APIs.
+    - id: BE6
+      title: JWT Rotation Service
+      priority: High
+      hours: 60
+      description: Backend for automatic JWT refresh and rotation to maintain secure sessions.
+      functionality:
+        - Refresh: Issue new access token
+        - Rotation: Invalidate old tokens every 30 days
+        - Notification: Trigger WebSocket on rotation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/auth/refresh
+        request:
+          method: POST
+          path: /api/auth/refresh
+          headers:
+            Authorization: Bearer {refresh_token}
+          body:
+            userId: u123
+        response:
+          status: 200
+          body:
+            accessToken: jwt_token_123
+            refreshToken: refresh_token_456
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Refresh JWT for user
+          - Send WebSocket notification
+        full:
+          - 1,000 refreshes/min, 30-day rotation
+          - ELK logs
+        error:
+          - Invalid refresh token: 403 error, ELK log
+          - Rotation failure: 500 error, ELK log
+      prompt: How to implement JWT rotation with automatic refresh? Examples of token management.
+    - id: BE7
+      title: Authentication Testing
+      priority: Medium
+      hours: 60
+      description: Testing for OAuth2, MFA, Web3, profile, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test authentication services with Locust? Examples of test cases.
+    - id: BE8
+      title: Authentication Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast authentication-related notifications via WebSocket.
+      functionality:
+        - Triggers: Login, MFA setup, profile update
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: auth
+            message: User logged in
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast login notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for authentication? Examples of Redis queuing.
+services:
+  - name: OAuth2 Authentication Service
+    description: Handles OAuth2 authentication with multiple providers
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for authentication
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: OAuth2 Authentication
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: Profile Analytics
+      type: AWS EC2
+      specs:
+        instance: m5.large
+        cores: 2
+        ram: 8GB
+  storage: 12TB (S3, InfluxDB)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

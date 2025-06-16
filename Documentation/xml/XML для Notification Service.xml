@@ -1,0 +1,52 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserNotifications id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <NotificationSettings>
+        <PriceAlerts>
+            <Enabled>true</Enabled>
+            <Channels>
+                <Channel>push</Channel>
+                <Channel>email</Channel>
+                <Channel>telegram</Channel>
+            </Channels>
+            <Frequency>immediate</Frequency>
+            <Priority>high</Priority>
+            <CustomSettings>
+                <MinPriceChangePercentage>1.0</MinPriceChangePercentage>
+                <MaxAlertsPerHour>5</MaxAlertsPerHour>
+            </CustomSettings>
+        </PriceAlerts>
+        <TradeAlerts>
+            <Enabled>true</Enabled>
+            <Channels>
+                <Channel>push</Channel>
+                <Channel>x</Channel>
+            </Channels>
+            <Frequency>immediate</Frequency>
+            <Priority>medium</Priority>
+        </TradeAlerts>
+        <SubscriptionAlerts>
+            <Enabled>true</Enabled>
+            <Channels>
+                <Channel>email</Channel>
+            </Channels>
+            <Frequency>daily</Frequency>
+            <Priority>low</Priority>
+        </SubscriptionAlerts>
+        <AnalyticsAlerts>
+            <Enabled>true</Enabled>
+            <Channels>
+                <Channel>push</Channel>
+            </Channels>
+            <Frequency>weekly</Frequency>
+            <Priority>low</Priority>
+            <CustomSettings>
+                <AlertOnHighVolatility>true</AlertOnHighVolatility>
+                <VolatilityThreshold>15.0</VolatilityThreshold>
+            </CustomSettings>
+        </AnalyticsAlerts>
+    </NotificationSettings>
+</UserNotifications>
+```
+
+**Пояснение**: Этот сервис хранит настройки уведомлений (push, email, Telegram, X) для цен, сделок, подписок, аналитики, с частотой и приоритетами.

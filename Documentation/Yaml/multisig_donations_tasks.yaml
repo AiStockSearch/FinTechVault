@@ -1,0 +1,589 @@
+epic:
+  id: 8f3d4c1a-7e6b-49f0-9c8d-2f1b3e5a6c7d
+  title: Multisig and Internal Donations
+  priority: Medium
+  duration_weeks: 10
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - 1cff2f1e-074b-4a7d-a9ba-89ce0fb3045c # Charity CRUD
+    - b57e72a8-a78a-4dab-aa0c-db28155dad34 # Crowdfunding CRUD
+    - 93b23216-a03b-4200-8076-43ee49324e27 # Multisig and Delayed Voting
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: false
+  api_documentation: []
+  tasks:
+    - id: FE1
+      title: Multisig Donation Initiation UI
+      priority: High
+      hours: 80
+      description: Develop a UI for initiating multisig-controlled donations to charitable or crowdfunding campaigns.
+      functionality:
+        - Form: Campaign ID, amount ($1,000 min), asset (USDT), signers
+        - Validation: Minimum amount, valid campaign
+        - Display: Signer selection, donation summary
+        - Notification: Toast on donation initiation
+      api:
+        endpoint: /api/donations/initiate
+        request:
+          method: POST
+          path: /api/donations/initiate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            amount: 1000
+            asset: USDT
+            signers:
+              - cosmos1abc...
+              - cosmos1xyz...
+        response:
+          status: 200
+          body:
+            donationId: 456
+            status: pending
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Initiate 1,000 USDT donation with 2 signers
+          - Toast notification on success
+        full:
+          - Support 1,000 initiations/min, 5 assets
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid amount: Show "Invalid Amount"
+          - API error: Show "Initiation Failed"
+      prompt: How to create a multisig donation initiation UI in React Native? Examples of signer selection.
+    - id: FE2
+      title: Multisig Donation Confirmation UI
+      priority: High
+      hours: 60
+      description: UI for confirming multisig donations with WTH token holders.
+      functionality:
+        - Form: Donation ID, signature (yes/no), WTH tokens (200 min)
+        - Display: Signatures collected, threshold (2/3)
+        - Notification: Toast on signature submission
+        - Animation: Signature progress bar
+      api:
+        endpoint: /api/donations/confirm
+        request:
+          method: POST
+          path: /api/donations/confirm
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+            signature: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            signatureId: 789
+            status: submitted
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Submit signature with 200 WTH tokens
+          - Toast notification on success
+        full:
+          - Support 1,000 signatures/min, progress display
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Insufficient tokens: Show "Insufficient Tokens"
+          - API error: Show "Signature Failed"
+      prompt: How to create a multisig donation confirmation UI in Wails? Examples of progress bars.
+    - id: FE3
+      title: Donation History UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing multisig donation history with filters.
+      functionality:
+        - Table: Date, campaign, amount, asset, status
+        - Filters: Date, campaign type, status
+        - Pagination: 20 donations/page
+        - Notification: Toast on history refresh
+      api:
+        endpoint: /api/donations/history
+        request:
+          method: GET
+          path: /api/donations/history?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            donations:
+              - date: 2025-06-01T12:00:00Z
+                campaignId: 123
+                amount: 1000
+                asset: USDT
+                status: completed
+            total: 100
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 10 USDT donations
+          - Toast notification on refresh
+        full:
+          - Support 1,000 donations/min, 5 filters
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - No donations: Show "No Donations Found"
+          - API error: Show "History Fetch Failed"
+      prompt: How to create a donation history UI in React Native? Examples of pagination.
+    - id: FE4
+      title: Donation Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for multisig donation analytics with graphs.
+      functionality:
+        - Graphs: Donation amounts, signer participation (Recharts)
+        - Filters: Date, campaign, asset
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/donations/analytics
+        request:
+          method: GET
+          path: /api/donations/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                amount: 2000
+                signers: 3
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display donation amount graph
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create a donation analytics dashboard in Wails? Examples of Recharts.
+    - id: FE5
+      title: Web3 Signature UI
+      priority: Medium
+      hours: 60
+      description: UI for signing multisig donations using MetaMask/WalletConnect.
+      functionality:
+        - Sign button: Initiate MetaMask signature
+        - Display: Signature status, txHash
+        - Notification: Toast on signature success
+        - Animation: Signature progress
+      api:
+        endpoint: /api/donations/web3
+        request:
+          method: POST
+          path: /api/donations/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            status: signed
+            txHash: 0x789...
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Sign donation with MetaMask
+          - Toast notification on success
+        full:
+          - Support 1,000 signatures/min, 2 wallets
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid signature: Show "Invalid Signature"
+          - Wallet error: Show "Signature Failed"
+      prompt: How to create a Web3 signature UI for donations in React Native? Examples of Web3.js.
+    - id: FE6
+      title: Donation Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to multisig donations (e.g., donation initiated, signature added).
+      functionality:
+        - Toast notifications: Donation initiated, signature submitted
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: donation
+            message: Donation 456 initiated
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for donation initiation
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for multisig donations in Wails? Examples of toast animations.
+    - id: BE1
+      title: Multisig Donation Initiation Service
+      priority: High
+      hours: 80
+      description: Backend for initiating multisig-controlled donations to campaigns on Cosmos.
+      functionality:
+        - Initiation: Create donation with signers
+        - Validation: Campaign status, minimum amount
+        - Storage: PostgreSQL for metadata
+        - Notification: Trigger WebSocket on initiation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/donations/initiate
+        request:
+          method: POST
+          path: /api/donations/initiate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            campaignId: 123
+            amount: 1000
+            asset: USDT
+            signers:
+              - cosmos1abc...
+              - cosmos1xyz...
+        response:
+          status: 200
+          body:
+            donationId: 456
+            status: pending
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Initiate 1,000 USDT donation
+          - Send WebSocket notification
+        full:
+          - 1,000 initiations/min, 5 assets
+          - ELK logs
+        error:
+          - Invalid campaign: 404 error, ELK log
+          - Invalid amount: 400 error, ELK log
+      prompt: How to initiate multisig donations on Cosmos? Examples of Cosmos SDK APIs.
+    - id: BE2
+      title: Multisig Donation Confirmation Service
+      priority: High
+      hours: 80
+      description: Backend for processing multisig signatures for donations on Cosmos.
+      functionality:
+        - Signatures: Collect and verify (2/3 threshold)
+        - Validation: WTH token balance (200 min)
+        - Execution: Process donation on threshold
+        - Notification: Trigger WebSocket on signature
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/donations/confirm
+        request:
+          method: POST
+          path: /api/donations/confirm
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+            signature: yes
+            tokens: 200
+        response:
+          status: 200
+          body:
+            signatureId: 789
+            status: submitted
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Record signature with 200 WTH tokens
+          - Send WebSocket notification
+        full:
+          - 1,000 signatures/min, execute on threshold
+          - ELK logs
+        error:
+          - Insufficient tokens: 403 error, ELK log
+          - Invalid donation: 404 error, ELK log
+      prompt: How to process multisig donation signatures on Cosmos? Examples of signature APIs.
+    - id: BE3
+      title: Donation Processing Service
+      priority: High
+      hours: 60
+      description: Backend for executing multisig donations to campaigns on Cosmos.
+      functionality:
+        - Execution: Transfer USDT to campaign address
+        - Validation: Sufficient signatures, campaign status
+        - Storage: PostgreSQL for records
+        - Notification: Trigger WebSocket on execution
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/donations/execute
+        request:
+          method: POST
+          path: /api/donations/execute
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+        response:
+          status: 200
+          body:
+            donationId: 456
+            status: completed
+            txHash: cosmos_tx_123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Execute 1,000 USDT donation
+          - Send WebSocket notification
+        full:
+          - 1,000 executions/min, 2 assets
+          - ELK logs
+        error:
+          - Insufficient signatures: 403 error, ELK log
+          - Campaign closed: 404 error, ELK log
+      prompt: How to execute multisig donations on Cosmos? Examples of transfer APIs.
+    - id: BE4
+      title: Donation Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting multisig donation analytics with Matomo.
+      functionality:
+        - Metrics: Donation amounts, signer participation
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/donations/analytics
+        request:
+          method: GET
+          path: /api/donations/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                amount: 2000
+                signers: 3
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 10 donations in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect donation analytics with Matomo? Examples of analytics APIs.
+    - id: BE5
+      title: Web3 Signature Service
+      priority: Medium
+      hours: 60
+      description: Backend for verifying Web3 signatures for multisig donations.
+      functionality:
+        - Verification: ECDSA signatures (MetaMask)
+        - Storage: IPFS for signature hashes
+        - Notification: Trigger WebSocket on signature
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/donations/web3
+        request:
+          method: POST
+          path: /api/donations/web3
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+            signature: 0x123...
+        response:
+          status: 200
+          body:
+            status: signed
+            txHash: 0x789...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Verify MetaMask signature
+          - Send WebSocket notification
+        full:
+          - 1,000 signatures/min, IPFS storage
+          - ELK logs
+        error:
+          - Invalid signature: 403 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to verify Web3 signatures for multisig donations? Examples of ECDSA verification.
+    - id: BE6
+      title: Donation Storage Service
+      priority: Medium
+      hours: 60
+      description: Backend for storing multisig donation records on IPFS and PostgreSQL.
+      functionality:
+        - Storage: Donation details on IPFS, metadata in PostgreSQL
+        - Encryption: AES-256 for metadata
+        - Notification: Trigger WebSocket on storage
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/storage/donations
+        request:
+          method: POST
+          path: /api/storage/donations
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            donationId: 456
+            data: encrypted_donation_data
+        response:
+          status: 200
+          body:
+            storageId: 123
+            cid: Qm123...
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store donation on IPFS
+          - Send WebSocket notification
+        full:
+          - 1,000 storages/min, AES-256 encryption
+          - ELK logs
+        error:
+          - Invalid data: 400 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to store donation records on IPFS with PostgreSQL? Examples of AES-256 encryption.
+    - id: BE7
+      title: Multisig Donation Testing
+      priority: Medium
+      hours: 60
+      description: Testing for donation initiation, confirmation, execution, and analytics services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test multisig donation services with Locust? Examples of test cases.
+    - id: BE8
+      title: Donation Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast multisig donation notifications via WebSocket.
+      functionality:
+        - Triggers: Donation initiated, signature added, donation executed
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: donation
+            message: Donation 456 initiated
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast donation initiation notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for multisig donations? Examples of Redis queuing.
+services:
+  - name: Multisig Donation Service
+    description: Manages multisig-controlled donations to campaigns
+    type: API
+    deployment: AWS EC2
+    dependencies:
+      - PostgreSQL
+      - IPFS
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for multisig donation actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: Multisig Donation
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3, IPFS, PostgreSQL)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

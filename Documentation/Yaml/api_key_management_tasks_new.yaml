@@ -1,0 +1,490 @@
+epic:
+  id: 9885ab18-2e17-4432-a607-fe7bfd67b545
+  title: API Key Management
+  priority: High
+  duration_weeks: 8
+  dependencies:
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - 438c90a2-9cb3-459a-81f1-9ff3360cfd7a # Auth
+    - 6974e0e3-cfb2-4f34-8131-85618ddf947b # Wallet
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Bybit API
+      url: https://bybit-exchange.github.io/docs/v5/intro
+    - name: OKX API
+      url: https://www.okx.com/docs-v5/en/
+    - name: Bitfinex API
+      url: https://docs.bitfinex.com/docs/rest-auth
+    - name: Interactive Brokers API
+      url: https://www.interactivebrokers.com/api/doc.html
+    - name: OANDA API
+      url: https://developer.oanda.com/rest-live-v20/introduction/
+  tasks:
+    - id: FE1
+      title: API Key Input UI
+      priority: High
+      hours: 60
+      description: Develop a UI for inputting API keys for CEX platforms with secure encryption.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., balance check)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on key validation
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Input and validate Bybit key
+          - Toast notification on success
+        full:
+          - Support 5 exchanges, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: How to create an API key input UI in React Native? Examples of AES-256 encryption.
+    - id: FE2
+      title: API Key Management UI
+      priority: Medium
+      hours: 60
+      description: UI for viewing, editing, and deleting API keys with status indicators.
+      functionality:
+        - Table: Exchange, status, added date
+        - Actions: Edit, delete, re-validate
+        - Notification: Toast on key update
+        - Animation: Table row transitions
+      api:
+        endpoint: /api/keys/list
+        request:
+          method: GET
+          path: /api/keys/list?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            keys:
+              - exchange: bybit
+                status: valid
+                added: 2025-06-15
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display 3 keys, delete one
+          - Toast notification on update
+        full:
+          - Support 5 exchanges, 1,000 operations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty list: Show "No Keys"
+          - API error: Show "Key Fetch Failed"
+      prompt: How to create an API key management UI in Wails? Examples of table transitions.
+    - id: FE3
+      title: API Key Balance UI
+      priority: Medium
+      hours: 60
+      description: UI for displaying balances across CEX platforms using API keys.
+      functionality:
+        - Table: Exchange, asset, balance
+        - Refresh button: Update balances
+        - Animation: Balance loading spinner
+        - Notification: Toast on balance update
+      api:
+        endpoint: /api/keys/balance
+        request:
+          method: GET
+          path: /api/keys/balance?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            balances:
+              - exchange: bybit
+                asset: USDT
+                amount: 1000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display Bybit USDT balance
+          - Toast notification on update
+        full:
+          - Support 5 exchanges, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Balance Fetch Failed"
+      prompt: How to create a balance display UI in React Native for CEX? Examples of balance tables.
+    - id: FE4
+      title: API Key Analytics UI
+      priority: Medium
+      hours: 60
+      description: Dashboard for API key usage analytics with graphs.
+      functionality:
+        - Graphs: Request count, error rate (Recharts)
+        - Filters: Date, exchange
+        - Export: CSV
+        - Notification: Toast on export
+      api:
+        endpoint: /api/keys/analytics
+        request:
+          method: GET
+          path: /api/keys/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                requests: 1000
+                errors: 10
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display request count graph for Bybit
+          - Toast notification on export
+        full:
+          - 5 metrics, CSV export, 1,000 updates/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: How to create an API key analytics dashboard in Wails? Examples of Recharts.
+    - id: FE5
+      title: API Key Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time notifications related to API key actions (e.g., key validated, rate limit reached).
+      functionality:
+        - Toast notifications: Key validated, rate limit warning
+        - Notification history: Type, message, timestamp
+        - WebSocket integration
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: api_key
+            message: API key validated for Bybit
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for key validation
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: How to implement WebSocket notifications for API key actions in Wails? Examples of toast animations.
+    - id: BE1
+      title: API Key Validation Service
+      priority: High
+      hours: 60
+      description: Backend for validating API keys by making test calls to CEX platforms.
+      functionality:
+        - Validation: Bybit /v5/account/info, OKX /api/v5/account/balance
+        - Storage: Vault (AES-256)
+        - Notification: Trigger WebSocket on validation
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USDT: 1000
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Validate Bybit key
+          - Send WebSocket notification
+        full:
+          - 1,000 validations/min, 5 exchanges
+          - ELK logs
+        error:
+          - Invalid key: 403 error, ELK log
+          - API failure: 500 error, ELK log
+      prompt: How to validate CEX API keys with Vault? Examples of test API calls.
+    - id: BE2
+      title: API Key Storage Service
+      priority: High
+      hours: 60
+      description: Backend for securely storing API keys with encryption.
+      functionality:
+        - Storage: Vault (AES-256)
+        - Key rotation: Every 30 days
+        - Notification: Trigger WebSocket on storage
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/keys/store
+        request:
+          method: POST
+          path: /api/keys/store
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            exchange: bybit
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            keyId: 123
+            status: stored
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store Bybit key in Vault
+          - Send WebSocket notification
+        full:
+          - 1,000 storages/min, key rotation
+          - ELK logs
+        error:
+          - Invalid key: 400 error, ELK log
+          - Storage failure: 500 error, ELK log
+      prompt: How to securely store API keys with Vault? Examples of key rotation.
+    - id: BE3
+      title: Rate-Limiting Service
+      priority: Medium
+      hours: 60
+      description: Backend for enforcing rate limits on CEX API requests.
+      functionality:
+        - Rate-limiting: 100 requests/min/user (NGINX)
+        - Caching: Redis (TTL 5 min)
+        - Notification: Trigger WebSocket on limit warning
+        - Logging: ELK Stack
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Enforce 100 requests/min for Bybit
+          - Send WebSocket notification
+        full:
+          - 1,000 requests/min, 5 exchanges
+          - ELK logs
+        error:
+          - Rate limit exceeded: 429 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: How to implement rate-limiting for CEX APIs with NGINX and Redis? Examples of configurations.
+    - id: BE4
+      title: API Key Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for collecting API key usage analytics with Matomo.
+      functionality:
+        - Metrics: Request count, error rate
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/keys/analytics
+        request:
+          method: GET
+          path: /api/keys/analytics?userId=u123&startDate=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                requests: 1000
+                errors: 10
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Track 100 requests in Matomo
+          - Send WebSocket notification
+        full:
+          - 1,000 records/min, 5 metrics
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: How to collect API key analytics with Matomo? Examples of analytics APIs.
+    - id: BE5
+      title: API Key Security Service
+      priority: High
+      hours: 60
+      description: Backend for detecting and mitigating API key misuse (e.g., anomaly detection).
+      functionality:
+        - Detection: Suspicious IPs, high error rates
+        - Mitigation: Temporary key suspension
+        - Notification: Trigger WebSocket on alert
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/keys/security
+        request:
+          method: GET
+          path: /api/keys/security?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            alerts:
+              - date: 2025-06-01
+                issue: High error rate
+                action: Suspended
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Detect high error rate
+          - Send WebSocket notification
+        full:
+          - 1,000 alerts/min, auto-mitigation
+          - ELK logs
+        error:
+          - False positive: Log in ELK
+          - Detection failure: CloudWatch alert
+      prompt: How to detect API key misuse with anomaly detection? Examples of security APIs.
+    - id: BE6
+      title: API Key Testing
+      priority: Medium
+      hours: 60
+      description: Testing for validation, storage, rate-limiting, analytics, and security services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: How to test API key services with Locust? Examples of test cases.
+    - id: BE7
+      title: API Key Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast API key-related notifications via WebSocket.
+      functionality:
+        - Triggers: Key validated, rate limit warning
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: api_key
+            message: API key validated for Bybit
+            timestamp: 2025-06-15T14:27:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast key validation notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: How to set up a WebSocket notification service for API key actions? Examples of Redis queuing.
+services:
+  - name: API Key Management Service
+    description: Manages and validates API keys for CEX integrations
+    type: API
+    deployment: AWS Lambda
+    dependencies:
+      - Vault
+      - Redis
+      - ELK Stack
+  - name: WebSocket Notification Service
+    description: Real-time notifications for API key actions
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies:
+      - Redis
+      - ELK Stack
+infrastructure:
+  servers:
+    - name: API Key Management
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+  storage: 12TB (S3)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

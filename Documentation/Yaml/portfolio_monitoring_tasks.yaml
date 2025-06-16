@@ -1,0 +1,547 @@
+epic:
+  id: 46bf3715-2434-4cef-9bfe-f6214afe56c0
+  title: Portfolio Monitoring
+  priority: High
+  duration_weeks: 12
+  dependencies:
+    - b38123fb-2c78-4a70-a288-5e702c1ce60f # Exchange API Integration
+    - 844b680c-1095-4a51-aa8f-799ac92e78f1 # Infrastructure Setup
+    - c5d6e7f8-0a1b-4c2d-9d3e-6e9f0a1b2c3d # WebSocket Notification Service
+  api_integration_feasibility: true
+  api_documentation:
+    - name: Interactive Brokers API
+      url: https://www.interactivebrokers.com/api/doc.html
+    - name: OANDA API
+      url: https://developer.oanda.com/rest-live-v20/introduction/
+  tasks:
+    # Frontend Tasks (Wails/React Native)
+    - id: FE1
+      title: Portfolio Analytics UI
+      priority: High
+      hours: 80
+      description: Develop a UI for real-time portfolio analytics, integrating client-side API calls to Interactive Brokers/OANDA for asset prices and balances.
+      functionality:
+        - Dashboard with portfolio value, asset allocation, and performance metrics
+        - Graphs: Portfolio value over time, Sharpe Ratio (Recharts)
+        - Filters: Date range, asset type (stocks, crypto, forex)
+        - Notification: Toast for portfolio value updates
+      api:
+        endpoint: External (Interactive Brokers /accounts/portfolio, OANDA /v3/accounts/{accountId}/summary)
+        request:
+          method: GET
+          path: https://api.interactivebrokers.com/accounts/portfolio?accountId={accountId}
+          headers:
+            Authorization: Bearer {api_token}
+            X-API-Key: "{user_api_key}"
+          body: {}
+        response:
+          status: 200
+          body:
+            portfolio:
+              totalValue: 100000
+              assets:
+                - symbol: BTC
+                  value: 50000
+                  quantity: 1
+                - symbol: EURUSD
+                  value: 50000
+                  quantity: 100000
+            metrics:
+              sharpeRatio: 1.5
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display portfolio value for 5 assets in < 1s
+          - Show Sharpe Ratio graph
+        full:
+          - Support 1,000 updates/min, 10 asset types
+          - Localization (RU, EN, CN)
+          - WCAG 2.1 compliance
+          - Toast notification for value change > 5%
+        error:
+          - Invalid API key: Show "Invalid API Key"
+          - API timeout: Show "Data Fetch Timed Out"
+      prompt: "How to build a portfolio analytics UI in React Native with Interactive Brokers API? Examples of Recharts integration."
+    - id: FE2
+      title: Watch-List UI
+      priority: Medium
+      hours: 60
+      description: Create a UI for managing a portfolio watch-list with price triggers and notifications.
+      functionality:
+        - Table: Asset, current price, trigger price, status
+        - Add/remove assets with autocomplete
+        - Set price triggers (e.g., alert if BTC > $60,000)
+        - Notification: Toast for trigger activation
+      api:
+        endpoint: /api/watchlist
+        request:
+          method: POST
+          path: /api/watchlist
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: SOL
+            triggerPrice: 200
+            direction: above
+        response:
+          status: 200
+          body:
+            watchId: 123
+            status: active
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Add SOL to watch-list with trigger at $200
+          - Display trigger status
+        full:
+          - Support 1,000 triggers/min, autocomplete for 100 assets
+          - Localization (RU, EN)
+          - Toast notification for trigger
+          - WCAG 2.1
+        error:
+          - Invalid asset: Show "Invalid Asset"
+          - API error: Show "Trigger Setup Failed"
+      prompt: "How to implement a watch-list UI in Wails with price triggers? Examples of autocomplete."
+    - id: FE3
+      title: Mobile-Optimized Portfolio UI
+      priority: Low
+      hours: 60
+      description: Ensure portfolio UI is responsive for mobile devices with adaptive layouts.
+      functionality:
+        - Responsive design: Adjust for screen sizes (320px-1440px)
+        - Touch-friendly graphs and tables
+        - Notification: Toast for layout switch
+      api:
+        endpoint: /api/portfolio/ui
+        request:
+          method: GET
+          path: /api/portfolio/ui?device=mobile
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            layout: responsive
+            components:
+              - type: graph
+                config: {mobile: true}
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Portfolio UI renders on 320px screen
+          - Graphs are touch-scrollable
+        full:
+          - Support 5 device sizes, localization (RU, EN)
+          - Toast notification for layout change
+          - WCAG 2.1
+        error:
+          - Layout failure: Show "Layout Error"
+          - API error: Show "UI Config Failed"
+      prompt: "How to create a mobile-optimized portfolio UI in React Native? Examples of responsive design."
+    - id: FE4
+      title: API Keys UI for Portfolio Monitoring
+      priority: Medium
+      hours: 60
+      description: UI for inputting and managing API keys for Interactive Brokers/OANDA portfolio data.
+      functionality:
+        - Form: Exchange, API key, secret, encryption password
+        - Validation: Test API call (e.g., /accounts/summary)
+        - Storage: Encrypted localStorage (AES-256)
+        - Notification: Toast on validation success
+      api:
+        endpoint: /api/keys/validate
+        request:
+          method: POST
+          path: /api/keys/validate
+          headers:
+            Authorization: Bearer {token}
+          body:
+            exchange: oanda
+            apiKey: key123
+            secret: sec123
+        response:
+          status: 200
+          body:
+            status: valid
+            balance:
+              USD: 100000
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Validate OANDA key, display balance
+          - Toast notification on success
+        full:
+          - Support 2 exchanges, 1,000 validations/min
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - Invalid key: Show "Invalid API Key"
+          - API error: Show "Validation Failed"
+      prompt: "How to create an API key input UI in Wails for portfolio monitoring? Examples of AES-256 encryption."
+    - id: FE5
+      title: Portfolio Performance Analytics UI
+      priority: Medium
+      hours: 60
+      description: Additional UI for detailed portfolio performance metrics (e.g., volatility, returns).
+      functionality:
+        - Graphs: Volatility, annualized returns (Recharts)
+        - Filters: Time period, asset
+        - Export: CSV
+        - Notification: Toast on export completion
+      api:
+        endpoint: /api/portfolio/analytics/ui
+        request:
+          method: GET
+          path: /api/portfolio/analytics/ui?asset=BTC&period=1y
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - date: 2025-06-01
+                volatility: 0.3
+                return: 0.15
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display BTC volatility graph
+          - Period filter applies
+        full:
+          - 5 metrics, CSV export, localization (RU, EN)
+          - Toast notification for export
+          - WCAG 2.1
+        error:
+          - Empty data: Show "No Data"
+          - Export failure: Show "Export Failed"
+      prompt: "How to create a performance analytics UI in React Native? Examples of CSV export."
+    - id: FE6
+      title: Portfolio Notifications UI
+      priority: Medium
+      hours: 60
+      description: UI for real-time portfolio notifications (e.g., value changes, watch-list triggers) via WebSocket.
+      functionality:
+        - Toast notifications: Portfolio value change > 5%, trigger activation
+        - Notification history: Type, message, timestamp
+        - WebSocket integration for updates
+        - Animation: Fade-in toasts
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: portfolio
+            message: Portfolio value increased by 6%
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Client
+      acceptance_criteria:
+        minimal:
+          - Display toast for 5% value change
+          - History shows 10 notifications
+        full:
+          - 1,000 notifications/min, animations
+          - Localization (RU, EN)
+          - WCAG 2.1
+        error:
+          - WebSocket disconnect: Show "Connection Lost"
+          - No notifications: Show "No Notifications"
+      prompt: "How to implement WebSocket notifications for portfolio updates in Wails? Examples of toast animations."
+    # Backend Tasks (Cloud/Services)
+    - id: BE1
+      title: Portfolio Data API Proxy
+      priority: High
+      hours: 80
+      description: Serverless proxy for aggregating portfolio data from Interactive Brokers/OANDA and Chainlink oracles.
+      functionality:
+        - Proxy to Interactive Brokers /accounts/portfolio, OANDA /v3/accounts/summary
+        - Chainlink for crypto prices
+        - Caching: Redis (TTL 5 min)
+        - Notification: Trigger WebSocket for significant changes
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/portfolio/data
+        request:
+          method: GET
+          path: /api/portfolio/data?userId=u123&asset=BTC
+          headers:
+            Authorization: Bearer {token}
+            X-API-Key: "{user_api_key}"
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - asset: BTC
+                price: 60000
+                quantity: 1
+                value: 60000
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Fetch BTC price and balance in < 100ms
+          - Cache active
+        full:
+          - 10,000 requests/min, 10 assets
+          - WebSocket notification for 5% change
+          - ELK logs success/errors
+        error:
+          - Invalid key: 403 error, ELK log
+          - API timeout: 500 error, ELK log
+      prompt: "How to create a serverless proxy for Interactive Brokers API with Chainlink? Examples of Redis caching."
+    - id: BE2
+      title: TimeSeries Data Storage
+      priority: Medium
+      hours: 60
+      description: Store portfolio data (prices, values) in InfluxDB for time-series analytics.
+      functionality:
+        - Storage: InfluxDB for price and value history
+        - Indexing: By asset and timestamp
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/portfolio/timeseries
+        request:
+          method: GET
+          path: /api/portfolio/timeseries?userId=u123&asset=BTC&start=2025-06-01
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              - timestamp: 2025-06-01T12:00:00Z
+                price: 60000
+                value: 60000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Store 1,000 BTC price records
+          - Retrieve in < 50ms
+        full:
+          - 1,000 records/min, indexed queries
+          - ELK logs
+        error:
+          - DB failure: 500 error, ELK log
+          - Invalid query: 400 error, ELK log
+      prompt: "How to set up InfluxDB for portfolio time-series data? Examples of indexing."
+    - id: BE3
+      title: Portfolio Analytics Service
+      priority: Medium
+      hours: 60
+      description: Backend for calculating portfolio performance metrics (Sharpe Ratio, volatility) with Matomo integration.
+      functionality:
+        - Metrics: Sharpe Ratio, volatility, returns
+        - Integration: Matomo for user behavior
+        - Notification: Trigger WebSocket for metric updates
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/portfolio/analytics
+        request:
+          method: GET
+          path: /api/portfolio/analytics?userId=u123&period=1y
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            metrics:
+              sharpeRatio: 1.5
+              volatility: 0.3
+              return: 0.15
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Calculate Sharpe Ratio for BTC
+          - Matomo tracks analytics
+        full:
+          - 1,000 calculations/min, 5 metrics
+          - WebSocket notification for updates
+          - ELK logs
+        error:
+          - Invalid period: 400 error, ELK log
+          - Matomo failure: CloudWatch alert
+      prompt: "How to calculate portfolio metrics with Matomo integration? Examples of analytics APIs."
+    - id: BE4
+      title: Watch-List Trigger Service
+      priority: Medium
+      hours: 60
+      description: Backend for managing watch-list triggers and sending notifications when triggered.
+      functionality:
+        - Trigger logic: Price thresholds (e.g., BTC > $60,000)
+        - Notification: WebSocket and push (Firebase)
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/watchlist/trigger
+        request:
+          method: POST
+          path: /api/watchlist/trigger
+          headers:
+            Authorization: Bearer {token}
+          body:
+            userId: u123
+            asset: SOL
+            triggerPrice: 200
+            direction: above
+        response:
+          status: 200
+          body:
+            triggerId: 123
+            status: active
+      deployment: Server (AWS Lambda)
+      acceptance_criteria:
+        minimal:
+          - Set SOL trigger at $200
+          - Send notification when triggered
+        full:
+          - 1,000 triggers/min, Firebase push
+          - ELK logs
+        error:
+          - Invalid trigger: 400 error, ELK log
+          - Notification failure: CloudWatch alert
+      prompt: "How to implement a watch-list trigger service with Firebase? Examples of price triggers."
+    - id: BE5
+      title: Portfolio Data Cache Service
+      priority: Low
+      hours: 60
+      description: Cache portfolio data with Redis to reduce API calls.
+      functionality:
+        - Caching: Redis (TTL 5 min)
+        - Invalidation: On significant price changes
+        - Logging: ELK Stack
+      api:
+        endpoint: /api/portfolio/cache
+        request:
+          method: GET
+          path: /api/portfolio/cache?userId=u123&asset=BTC
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            data:
+              asset: BTC
+              price: 60000
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Cache BTC price data
+          - Access in < 20ms
+        full:
+          - 1,000 requests/min, cache invalidation
+          - ELK logs
+        error:
+          - Cache miss: 404 error, ELK log
+          - Redis failure: CloudWatch alert
+      prompt: "How to set up Redis caching for portfolio data? Examples of cache invalidation."
+    - id: BE6
+      title: Portfolio Monitoring Testing
+      priority: Medium
+      hours: 60
+      description: Testing for portfolio data, analytics, triggers, and caching services.
+      functionality:
+        - Unit tests: Jest for APIs
+        - Load tests: Locust (10,000 requests/min)
+        - Penetration tests: Burp Suite
+      api:
+        endpoint: None
+        request: {}
+        response: {}
+      deployment: Server (CI/CD)
+      acceptance_criteria:
+        minimal:
+          - 90% test coverage
+          - OWASP audit passed
+        full:
+          - 99% uptime, < 50ms response
+          - Vulnerabilities fixed
+        error:
+          - Test failure: Jira ticket
+          - Vulnerability found: ELK log
+      prompt: "How to test portfolio monitoring services with Locust? Examples of test cases."
+    - id: BE7
+      title: Portfolio Notifications Service
+      priority: Medium
+      hours: 60
+      description: Backend to generate and broadcast portfolio-related notifications via WebSocket.
+      functionality:
+        - Triggers: Portfolio value change > 5%, watch-list trigger
+        - Broadcast: WebSocket to clients
+        - Queue: Redis for buffering
+        - Logging: ELK Stack
+      api:
+        endpoint: /ws/notifications
+        request:
+          method: WebSocket
+          path: ws://api.wealthproject.com/ws/notifications?userId=u123
+          headers:
+            Authorization: Bearer {token}
+          body: {}
+        response:
+          status: 200
+          body:
+            type: portfolio
+            message: Portfolio value increased by 6%
+            timestamp: 2025-06-15T12:00:00Z
+      deployment: Server (AWS EC2)
+      acceptance_criteria:
+        minimal:
+          - Broadcast value change notification
+          - Redis queue processes 100 messages
+        full:
+          - 1,000 notifications/min
+          - ELK logs
+          - Grafana metrics
+        error:
+          - WebSocket failure: CloudWatch alert
+          - Queue overflow: ELK log
+      prompt: "How to set up a WebSocket notification service for portfolio updates? Examples of Redis queuing."
+
+services:
+  - name: Portfolio Data Proxy
+    description: Serverless proxy for aggregating portfolio data from CEX and Chainlink
+    type: API
+    deployment: AWS Lambda
+    dependencies: [Redis, InfluxDB, ELK Stack]
+  - name: WebSocket Notification Service
+    description: Real-time notifications for portfolio updates
+    type: WebSocket
+    deployment: AWS EC2
+    dependencies: [Redis, ELK Stack]
+
+infrastructure:
+  servers:
+    - name: Portfolio Data Proxy
+      type: AWS Lambda
+      specs:
+        memory: 512MB
+        timeout: 30s
+    - name: WebSocket Notification
+      type: AWS EC2
+      specs:
+        instance: m5.xlarge
+        cores: 4
+        ram: 16GB
+    - name: TimeSeries Storage
+      type: AWS EC2
+      specs:
+        instance: m5.large
+        cores: 2
+        ram: 8GB
+  storage: 12TB (S3, InfluxDB)
+  cost: $6000-$12000/month
+  monitoring:
+    - ELK Stack
+    - Prometheus/Grafana
+    - Matomo
+    - CloudWatch

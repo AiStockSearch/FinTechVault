@@ -1,0 +1,131 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserAuth id="u123456789" createdAt="2025-06-11T22:47:00Z" updatedAt="2025-06-11T23:00:00Z">
+    <Profile>
+        <UserID>u123456789</UserID>
+        <Username>john_doe</Username>
+        <Email>john.doe@example.com</Email>
+        <PhoneNumber>encrypted:+1234567890</PhoneNumber>
+        <DisplayName>John Doe</DisplayName>
+        <Language>en</Language>
+        <TimeZone>UTC</TimeZone>
+        <AvatarURL>https://example.com/avatars/john_doe.png</AvatarURL>
+        <QRCode id="qr_profile_001">
+            <URL>https://example.com/qr/profile/u123456789</URL>
+            <Type>profile</Type>
+            <GeneratedAt>2025-06-01T23:00:00Z</GeneratedAt>
+            <UsageCount>25</UsageCount>
+        </QRCode>
+        <Bio>Web3 trader, crypto analyst, and DeFi enthusiast</Bio>
+        <AuthDetails>
+            <AuthMethods>
+                <AuthMethod>
+                    <Type>oauth</Type>
+                    <Provider>google</Provider>
+                    <OAuthID>google_987654321</OAuthID>
+                    <AccessToken>encrypted:ZmZmY2FjZmY0ZGZkZg==</AccessToken>
+                    <RefreshToken>encrypted:YmFzZGZmZGZkZGYzZg==</RefreshToken>
+                    <LastAuthenticated>2025-06-11T22:30:00Z</LastAuthenticated>
+                    <Encryption>
+                        <Algorithm>AES-256</Algorithm>
+                        <VaultReference>vault://users/u123456789/auth/google</VaultReference>
+                    </Encryption>
+                </AuthMethod>
+                <AuthMethod>
+                    <Type>oauth</Type>
+                    <Provider>x</Provider>
+                    <OAuthID>x_123456789</OAuthID>
+                    <AccessToken>encrypted:XmFzZGZmZGZkZGYzZg==</AccessToken>
+                    <LastAuthenticated>2025-06-10T15:00:00Z</LastAuthenticated>
+                </AuthMethod>
+                <AuthMethod>
+                    <Type>walletconnect</Type>
+                    <Provider>validium</Provider>
+                    <WalletAddress>0x1234567890abcdef</WalletAddress>
+                    <ConnectorID>validium_456789</ConnectorID>
+                    <LastAuthenticated>2025-06-10T14:00:00Z</LastAuthenticated>
+                </AuthMethod>
+            </AuthMethods>
+            <TwoFactor>
+                <Enabled>true</Enabled>
+                <Methods>
+                    <Method>
+                        <Type>google_authenticator</Type>
+                        <Secret>encrypted:JHBzZGZmZGZkZGYzZg==</Secret>
+                        <LastVerified>2025-06-11T10:00:00Z</LastVerified>
+                    </Method>
+                    <Method>
+                        <Type>sms</Type>
+                        <PhoneNumber>encrypted:+1234567890</PhoneNumber>
+                        <LastVerified>2025-06-10T12:00:00Z</LastVerified>
+                    </Method>
+                    <Method>
+                        <Type>biometric</Type>
+                        <DeviceID>encrypted:device_987654</DeviceID>
+                        <LastVerified>2025-06-11T09:00:00Z</LastVerified>
+                    </Method>
+                </Methods>
+                <RecoveryOptions>
+                    <Email>recovery.john@example.com</Email>
+                    <SecurityQuestions>
+                        <Question id="q1" answer="encrypted:ZmFzZGZmZGZkZGYzZg=="/>
+                        <Question id="q2" answer="encrypted:YmFzZGZmZGZkZGYzZg=="/>
+                    </SecurityQuestions>
+                </RecoveryOptions>
+            </TwoFactor>
+        </AuthDetails>
+        <SecuritySettings>
+            <SessionTimeoutMinutes>15</SessionTimeoutMinutes>
+            <IPWhitelisting>
+                <IP>192.168.1.1</IP>
+                <IP>10.0.0.5</IP>
+            </IPWhitelisting>
+            <Encryption>
+                <Algorithm>AES-256</Algorithm>
+                <KeyID>key_001</KeyID>
+                <VaultReference>vault://users/u123456789/keys/profile</VaultReference>
+                <KeyRotationIntervalDays>30</KeyRotationIntervalDays>
+            </Encryption>
+            <AuditLogs>
+                <Enabled>true</Enabled>
+                <RetentionDays>90</RetentionDays>
+            </AuditLogs>
+        </SecuritySettings>
+        <Settings>
+            <Notifications>
+                <PushEnabled>true</PushEnabled>
+                <EmailEnabled>true</EmailEnabled>
+                <PriceAlerts>true</PriceAlerts>
+                <TradeAlerts>true</TradeAlerts>
+                <SubscriptionAlerts>true</SubscriptionAlerts>
+                <AnalyticsAlerts>true</AnalyticsAlerts>
+            </Notifications>
+            <Theme>dark</Theme>
+            <Currency>USD</Currency>
+            <AnalyticsPreferences>
+                <ShowVolatility>true</ShowVolatility>
+                <ShowCorrelation>true</ShowCorrelation>
+                <ShowValueAtRisk>true</ShowValueAtRisk>
+                <ShowSharpeRatio>true</ShowSharpeRatio>
+            </AnalyticsPreferences>
+            <UIFeatures>
+                <ShowAdvancedCharts>true</ShowAdvancedCharts>
+                <EnableQuickTrade>true</EnableQuickTrade>
+                <EnablePortfolioRebalancing>true</EnablePortfolioRebalancing>
+            </UIFeatures>
+        </Settings>
+        <Achievements>
+            <Achievement id="ach001" name="First Trade" earnedAt="2025-06-01T12:00:00Z" rewardPoints="100"/>
+            <Achievement id="ach002" name="100 Trades" earnedAt="2025-06-10T15:00:00Z" rewardPoints="500"/>
+            <Achievement id="ach003" name="Published 10 Articles" earnedAt="2025-06-11T10:00:00Z" rewardPoints="300"/>
+            <Achievement id="ach004" name="Social Influencer" earnedAt="2025-06-11T12:00:00Z" rewardPoints="200"/>
+        </Achievements>
+        <ActivityLog>
+            <Event id="evt001" type="login" timestamp="2025-06-11T22:30:00Z" ip="192.168.1.1" device="desktop" userAgent="Chrome/125.0"/>
+            <Event id="evt004" type="wallet_link" timestamp="2025-06-01T12:00:00Z" ip="192.168.1.1" device="desktop"/>
+        </ActivityLog>
+    </Profile>
+</UserAuth>
+```
+
+**Пояснение**: Этот сервис хранит данные профиля, аутентификации (OAuth, 2FA, WalletConnect), настройки безопасности, UI-настройки, достижения, логи активности, связанные с входом и регистрацией. QR-код профиля также здесь, так как он относится к идентичности пользователя.
